@@ -30,7 +30,13 @@ function uiReducer(state: AnalysisUiState, action: AnalysisAction): AnalysisUiSt
     case 'setJob':
       return { ...state, job: action.job, detail: action.detail };
     case 'setResult':
-      return { ...state, result: action.result, rawText: action.rawText };
+      return {
+        ...state,
+        result: action.result,
+        rawText: action.rawText,
+        promptTokens: action.promptTokens,
+        completionTokens: action.completionTokens,
+      };
     case 'setLoopStatus':
       return { ...state, status: action.status, statusText: action.text, isError: action.isError ?? false };
     case 'setPhase':
@@ -38,7 +44,7 @@ function uiReducer(state: AnalysisUiState, action: AnalysisAction): AnalysisUiSt
     case 'setPrompt':
       return { ...state, prompt: action.prompt };
     case 'resetResult':
-      return { ...state, result: null, rawText: '', prompt: '' };
+      return { ...state, result: null, rawText: '', prompt: '', promptTokens: undefined, completionTokens: undefined };
     case 'close':
       return { ...state, closed: true };
     case 'reopen':

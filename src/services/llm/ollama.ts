@@ -1,6 +1,6 @@
 // Ollama 本地模型客户端：GET /api/tags 拉模型，POST /api/chat 对话
 
-import type { LlmClient } from './types';
+import type { LlmClient, LlmChatResult } from './types';
 import type { LlmChatMessage } from '~src/constant/types';
 import { normalizeBaseUrl } from '~src/utils/normalize-base-url';
 
@@ -8,10 +8,10 @@ import { normalizeBaseUrl } from '~src/utils/normalize-base-url';
  * 上下文窗口大小（token 数）。Ollama 默认仅 2048/4096，简历+岗位描述这类长输入会
  * 挤占窗口导致输出截断，必须显式调大；注意不要超过模型自身上限（qwen2.5 系列为 32768）
  */
-const NUM_CTX = 16384;
+const NUM_CTX = 32000;
 
 /** 输出 token 上限：匹配分析 JSON（reason 100 字 + greeting 50 字）几百 token 足够，防止无限生成 */
-const NUM_PREDICT = 1024;
+const NUM_PREDICT = 10000;
 
 /** GET /api/tags 响应结构 */
 interface OllamaTagsResponse {
@@ -31,6 +31,10 @@ interface OllamaChatResponse {
   };
   /** 生成结束原因：stop 正常完成 / length 达到输出上限 / load 上下文窗口不足被截断 */
   done_reason?: 'stop' | 'length' | 'load';
+  /** 输入 token 数（prompt 实际消耗，含上下文拼接开销） */
+  prompt_eval_count?: number;
+  /** 输出 token 数 */
+  eval_count?: number;
 }
 
 /**
@@ -51,7 +55,7 @@ export function createOllamaClient(baseUrl: string, model: string): LlmClient {
   }
 
   /** 发起对话（format: json 强制模型输出 JSON，think: false 关闭思考输出） */
-  async function chat(messages: LlmChatMessage[]): Promise<string> {
+  async function chat(messages: LlmChatMessage[]): Promise<LlmChatResult> {
     const res = await fetch(`${base}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -75,7 +79,11 @@ export function createOllamaClient(baseUrl: string, model: string): LlmClient {
           : `达到输出长度上限，请调大 NUM_PREDICT（当前 ${NUM_PREDICT}）`;
       throw new Error(`模型输出被截断：${reason}`);
     }
-    return data.message?.content ?? '';
+    return {
+      text: data.message?.content ?? '',
+      promptTokens: data.prompt_eval_count,
+      completionTokens: data.eval_count,
+    };
   }
 
   /** 测试连接：拉取模型列表验证服务可达 */

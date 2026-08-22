@@ -1,6 +1,6 @@
 // OpenAI 兼容 API 客户端（千问 DashScope / DeepSeek 等）：GET /models 拉模型，POST /chat/completions 对话
 
-import type { LlmClient } from './types';
+import type { LlmClient, LlmChatResult } from './types';
 import type { LlmChatMessage } from '~src/constant/types';
 import { normalizeBaseUrl } from '~src/utils/normalize-base-url';
 
@@ -23,6 +23,13 @@ interface OpenAiChatResponse {
       content?: string;
     };
   }>;
+  /** token 用量统计（部分兼容 API 可能不返回） */
+  usage?: {
+    /** 输入 token 数 */
+    prompt_tokens?: number;
+    /** 输出 token 数 */
+    completion_tokens?: number;
+  };
 }
 
 /**
@@ -45,7 +52,7 @@ export function createOpenAiClient(baseUrl: string, apiKey: string, model: strin
   }
 
   /** 发起对话（response_format json_object 强制模型输出 JSON） */
-  async function chat(messages: LlmChatMessage[]): Promise<string> {
+  async function chat(messages: LlmChatMessage[]): Promise<LlmChatResult> {
     const res = await fetch(`${base}/chat/completions`, {
       method: 'POST',
       headers,
@@ -58,7 +65,11 @@ export function createOpenAiClient(baseUrl: string, apiKey: string, model: strin
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = (await res.json()) as OpenAiChatResponse;
-    return data.choices?.[0]?.message?.content ?? '';
+    return {
+      text: data.choices?.[0]?.message?.content ?? '',
+      promptTokens: data.usage?.prompt_tokens,
+      completionTokens: data.usage?.completion_tokens,
+    };
   }
 
   /** 测试连接：拉取模型列表验证服务可达 */

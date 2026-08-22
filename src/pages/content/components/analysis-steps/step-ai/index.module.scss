@@ -40,6 +40,13 @@
   color: #6b7280;
 }
 
+// 右侧动作区：token 统计 + 查看入口，靠右排列
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 // 查看入口：品牌色
 .link {
   flex-shrink: 0;

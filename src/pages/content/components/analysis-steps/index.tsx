@@ -51,6 +51,8 @@ function AnalysisSteps({ ui, onCopy, copied }: AnalysisStepsProps) {
         <StepAi
           prompt={ui.prompt}
           rawText={ui.rawText}
+          promptTokens={ui.promptTokens}
+          completionTokens={ui.completionTokens}
           analyzing={step2Active}
           active={step2Active}
         />

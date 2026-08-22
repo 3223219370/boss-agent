@@ -17,6 +17,19 @@ export function findCurrentCard(): HTMLElement | null {
 }
 
 /**
+ * 定位当前选中卡片在推荐列表中的索引（自动循环起始位置用）
+ * active 态卡片可能位于 cardArea 元素内部（.job-card-wrap.active > .job-card-box），用 contains 匹配
+ * @returns 卡片索引；无 active 卡片或不在列表内时返回 0（从第一张开始）
+ */
+export function findActiveCardIndex(): number {
+  const cards = Array.from(document.querySelectorAll(ZHIPIN_SELECTORS.cardArea));
+  const active = document.querySelector<HTMLElement>(ZHIPIN_SELECTORS.activeCard);
+  if (!active) return 0;
+  const index = cards.findIndex((card) => card === active || card.contains(active));
+  return index === -1 ? 0 : index;
+}
+
+/**
  * 提取卡片信息（岗位名/标签/公司/地点/href）
  * @param cardEl 卡片元素
  * @returns 卡片结构化信息

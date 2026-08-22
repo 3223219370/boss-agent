@@ -18,6 +18,7 @@ import {
   clickCard,
   extractCardInfo,
   extractDetailInfo,
+  findActiveCardIndex,
   findCurrentCard,
   currentCart,
   scrollAndClick,
@@ -32,7 +33,15 @@ import { getErrorMessage } from '~src/utils/error-message';
 export type AnalyzerEvent =
   | { type: 'setStatus'; text: string; isError?: boolean }
   | { type: 'setJob'; job: JobCardInfo; detail: JobDetailInfo }
-  | { type: 'setResult'; result: LlmParseResult; rawText: string }
+  | {
+      type: 'setResult';
+      result: LlmParseResult;
+      rawText: string;
+      /** 输入 token 数（API 未返回时为 undefined） */
+      promptTokens?: number;
+      /** 输出 token 数（API 未返回时为 undefined） */
+      completionTokens?: number;
+    }
   | { type: 'resetResult' }
   | { type: 'setLoopStatus'; status: LoopStatus; text: string; isError?: boolean }
   | { type: 'setPhase'; phase: AnalysisPhase }
@@ -110,9 +119,15 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
     const prompt = buildPrompt(config.resumeText, { ...info, description: detail.description });
     emit({ type: 'setPrompt', prompt });
     const client = createLlmClient(config);
-    const text = await client.chat([{ role: 'user', content: prompt }]);
-    const result = parseLlmResponse(text);
-    emit({ type: 'setResult', result, rawText: text });
+    const llmResult = await client.chat([{ role: 'user', content: prompt }]);
+    const result = parseLlmResponse(llmResult.text);
+    emit({
+      type: 'setResult',
+      result,
+      rawText: llmResult.text,
+      promptTokens: llmResult.promptTokens,
+      completionTokens: llmResult.completionTokens,
+    });
     emit({ type: 'setPhase', phase: 'done' });
     emit({ type: 'setStatus', text: '分析完成' });
     return result;
@@ -201,9 +216,15 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
         const prompt = buildPrompt(resumeCache, { ...info, description: detail.description });
         emit({ type: 'setPrompt', prompt });
         if (!llmClient) return;
-        const text = await llmClient.chat([{ role: 'system', content: prompt }]);
-        const result = parseLlmResponse(text);
-        emit({ type: 'setResult', result, rawText: text });
+        const llmResult = await llmClient.chat([{ role: 'system', content: prompt }]);
+        const result = parseLlmResponse(llmResult.text);
+        emit({
+          type: 'setResult',
+          result,
+          rawText: llmResult.text,
+          promptTokens: llmResult.promptTokens,
+          completionTokens: llmResult.completionTokens,
+        });
         emit({ type: 'setPhase', phase: 'done' });
         loop.doneSet.add(info.href);
         loop.currentIndex++;
@@ -276,7 +297,8 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
     greetingMode = config.greetingMode;
     loop.status = 'RUNNING';
     loop.doneSet.clear();
-    loop.currentIndex = 0;
+    // 从当前选中（active）卡片开始分析，而不是列表第一张
+    loop.currentIndex = findActiveCardIndex();
     emit({ type: 'setLoopStatus', status: 'RUNNING', text: '开始分析…' });
     void runLoop();
   }

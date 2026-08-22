@@ -28,6 +28,10 @@ export interface AnalysisUiState {
   rawText: string;
   /** 本次输入给大模型的 prompt 全文（AI 分析步骤 Popover 展示用） */
   prompt: string;
+  /** 输入 token 数（API 未返回时为 undefined，AI 分析步骤展示用） */
+  promptTokens?: number;
+  /** 输出 token 数（API 未返回时为 undefined，AI 分析步骤展示用） */
+  completionTokens?: number;
   /** 面板是否已关闭（关闭后收起为悬浮按钮） */
   closed: boolean;
 }
@@ -36,7 +40,15 @@ export interface AnalysisUiState {
 export type AnalysisAction =
   | { type: 'setStatus'; text: string; isError?: boolean }
   | { type: 'setJob'; job: JobCardInfo; detail: JobDetailInfo }
-  | { type: 'setResult'; result: LlmParseResult; rawText: string }
+  | {
+      type: 'setResult';
+      result: LlmParseResult;
+      rawText: string;
+      /** 输入 token 数（API 未返回时为 undefined） */
+      promptTokens?: number;
+      /** 输出 token 数（API 未返回时为 undefined） */
+      completionTokens?: number;
+    }
   | { type: 'setLoopStatus'; status: LoopStatus; text: string; isError?: boolean }
   | { type: 'setPhase'; phase: AnalysisPhase }
   | { type: 'setPrompt'; prompt: string }
