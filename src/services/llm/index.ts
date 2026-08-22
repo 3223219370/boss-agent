@@ -1,4 +1,4 @@
-// LLM 客户端工厂：按 provider 类型创建对应的客户端实例
+// LLM 客户端工厂：ollama 走本地客户端，云端供应商（DeepSeek / 千问）走 OpenAI 兼容客户端
 
 import type { LlmClient } from './types';
 import type { LlmConfig } from '~src/constant/types';

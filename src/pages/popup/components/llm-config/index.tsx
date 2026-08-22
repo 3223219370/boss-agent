@@ -4,11 +4,7 @@ import { Button, Input, Select } from 'antd';
 
 // 类型导入用别名，避免与组件函数名 LlmConfig 同名冲突（verbatimModuleSyntax 下导出解析会混淆）
 import type { LlmConfig as LlmConfigType } from '~src/constant/types';
-import {
-  CUSTOM_SERVICE_ID,
-  LLM_SERVICE_PRESETS,
-  matchServicePreset,
-} from '~src/constant/llm-providers';
+import { API_KEY_PROVIDERS, matchServicePreset } from '~src/constant/llm-providers';
 import type { LlmServiceId } from '~src/constant/llm-providers';
 import { SERVICE_OPTIONS } from '../../constant';
 import styles from './index.module.scss';
@@ -35,7 +31,7 @@ interface LlmConfigProps {
 
 /**
  * 大模型配置表单：配置修改即保存；服务类型下拉直接选择 Ollama / DeepSeek / 千问预设，
- * 接口地址与预设联动回显；OpenAI 兼容场景显示 API Key
+ * 接口地址与预设联动回显；云端供应商（DeepSeek / 千问）显示 API Key
  */
 function LlmConfig({
   config,
@@ -47,9 +43,10 @@ function LlmConfig({
   onRefreshModels,
   onTestConnection,
 }: LlmConfigProps) {
-  // 当前配置匹配的服务预设（地址与预设不匹配时显示「自定义」）
-  const serviceId = matchServicePreset(config.provider, config.baseUrl);
-  const isOpenAi = config.provider === 'openai';
+  // 当前配置对应的服务预设（按 provider 匹配；接口地址可独立自定义）
+  const serviceId = matchServicePreset(config.provider);
+  // 云端供应商需填写 API Key，Ollama 本地场景隐藏该字段
+  const requiresApiKey = API_KEY_PROVIDERS.has(config.provider);
 
   return (
     <div className={styles.config}>
@@ -73,7 +70,7 @@ function LlmConfig({
           className={styles.fullWidth}
         />
       </div>
-      {isOpenAi && (
+      {requiresApiKey && (
         <div className={styles.field}>
           <span className={styles.label}>API Key</span>
           <Input.Password

@@ -6,7 +6,7 @@ import zhCN from 'antd/locale/zh_CN';
 // 类型导入用别名，避免与组件 LlmConfig 同名
 import type { LlmConfig as LlmConfigType } from '~src/constant/types';
 import { MESSAGE_TYPES } from '~src/constant/messages';
-import { CUSTOM_SERVICE_ID, LLM_SERVICE_PRESETS } from '~src/constant/llm-providers';
+import { LLM_SERVICE_PRESETS } from '~src/constant/llm-providers';
 import type { LlmServiceId } from '~src/constant/llm-providers';
 import { usePopupConfig } from './hooks/use-popup-config';
 import LlmConfig from './components/llm-config';

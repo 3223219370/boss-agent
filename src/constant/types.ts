@@ -1,7 +1,7 @@
 // 全局共享领域类型：popup 与 content 两侧共用的类型定义
 
-/** LLM 提供商类型：ollama 本地模型 / openai 兼容 API（千问、DeepSeek 等） */
-export type ProviderType = 'ollama' | 'openai';
+/** LLM 提供商类型：ollama 本地模型 / deepseek / qwen（千问）云端 API */
+export type ProviderType = 'ollama' | 'deepseek' | 'qwen';
 
 /** LLM 配置（不包含简历，简历单独管理） */
 export interface LlmConfig {
@@ -9,7 +9,7 @@ export interface LlmConfig {
   provider: ProviderType;
   /** 服务基础地址（Ollama 默认 http://localhost:11434），已去除末尾斜杠 */
   baseUrl: string;
-  /** OpenAI 兼容 API 密钥（Ollama 场景为空字符串） */
+  /** 云端 API 密钥（DeepSeek / 千问；Ollama 场景为空字符串） */
   apiKey: string;
   /** 已选模型名 */
   model: string;

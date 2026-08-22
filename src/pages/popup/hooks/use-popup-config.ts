@@ -6,6 +6,7 @@ import type { AppConfig, GreetingMode, LlmConfig } from '~src/constant/types';
 import type { BoosAgentMessageType } from '~src/constant/messages';
 import { MESSAGE_TYPES } from '~src/constant/messages';
 import { createLlmClient } from '~src/services/llm';
+import { API_KEY_PROVIDERS } from '~src/constant/llm-providers';
 import {
   clearResumeText,
   DEFAULT_APP_CONFIG,
@@ -48,7 +49,7 @@ export function usePopupConfig() {
   /** 拉取模型列表并回填已选模型（未保存模型时默认选第一个） */
   const refreshModels = useCallback(
     async (cfg: LlmConfig) => {
-      if (cfg.provider === 'openai' && !cfg.apiKey.trim()) {
+      if (API_KEY_PROVIDERS.has(cfg.provider) && !cfg.apiKey.trim()) {
         setStatus({ text: '请先填写 API Key', isError: true });
         return;
       }
@@ -77,7 +78,7 @@ export function usePopupConfig() {
 
   /** 测试连接（拉取模型列表验证服务可达） */
   const testConnection = useCallback(async (cfg: LlmConfig) => {
-    if (cfg.provider === 'openai' && !cfg.apiKey.trim()) {
+    if (API_KEY_PROVIDERS.has(cfg.provider) && !cfg.apiKey.trim()) {
       setStatus({ text: '请先填写 API Key', isError: true });
       return;
     }

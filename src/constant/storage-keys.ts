@@ -5,7 +5,7 @@ export const STORAGE_KEYS = {
   provider: 'provider',
   /** 服务基础地址 */
   baseUrl: 'baseUrl',
-  /** OpenAI 兼容 API 密钥 */
+  /** 云端 API 密钥（DeepSeek / 千问；Ollama 场景为空） */
   apiKey: 'apiKey',
   /** 已选模型名 */
   model: 'model',
