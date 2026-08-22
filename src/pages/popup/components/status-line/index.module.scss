@@ -1,6 +1,22 @@
 // 状态条样式
 
+// 吸顶容器：贴视口顶部，背景与页面底色一致保证视觉连续；min-height + flex 居中防状态切换时高度抖动
+.wrap {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  background: #f6f7f9;
+}
+
+// 覆盖 antd filled Alert 默认字号与圆角（antd CSS-in-JS 渲染时后注入，组合选择器提高优先级）
 .alert {
-  padding: 6px 10px;
-  font-size: 12px;
+  flex: 1;
+
+  &:global(.ant-alert) {
+    font-size: 12px;
+    border-radius: 8px;
+  }
 }

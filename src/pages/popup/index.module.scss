@@ -29,15 +29,16 @@
   color: #1a1d21;
 }
 
+// Tab 内容卡片容器（白色圆角卡片，与旧版 section 视觉一致）
 .section {
   background: #fff;
   border-radius: 10px;
   padding: 12px;
 }
 
-.sectionTitle {
-  margin: 0 0 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #6b7280;
+// antd Tabs 微调：压缩导航栏下边距，适配 popup 紧凑布局
+.tabs {
+  :global(.ant-tabs-nav) {
+    margin: 0 0 10px;
+  }
 }

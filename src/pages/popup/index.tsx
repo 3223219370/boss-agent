@@ -1,6 +1,6 @@
-// popup 配置面板页面：大模型配置 / 简历 / 运行控制 / 状态反馈
+// popup 配置面板页面：顶部状态反馈 + 三个 Tab（大模型配置 / 简历配置 / 运行配置）
 
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, Tabs } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 
 // 类型导入用别名，避免与组件 LlmConfig 同名
@@ -18,8 +18,9 @@ import styles from './index.module.scss';
 
 /**
  * popup 配置面板页根组件
+ * - 顶部状态条吸顶展示操作反馈；下方 Tab 承载三类配置
  * - 打开时自动加载已保存配置并刷新模型列表
- * - 配置改动即保存，操作反馈显示在底部状态条
+ * - 配置改动即保存
  */
 function PopupPage() {
   const {
@@ -54,35 +55,54 @@ function PopupPage() {
           <span className={styles.brandName}>Boos Agent</span>
         </header>
 
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>大模型配置</h2>
-          <LlmConfig
-            config={config}
-            models={models}
-            isFetchingModels={isFetchingModels}
-            isTesting={isTesting}
-            onConfigChange={updateConfig}
-            onServiceChange={handleServiceChange}
-            onRefreshModels={() => refreshModels(config)}
-            onTestConnection={() => testConnection(config)}
-          />
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>简历</h2>
-          <ResumeEditor savedText={config.resumeText} onSave={saveResume} onClear={clearResume} />
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>运行控制</h2>
-          <GreetingModeSelector value={config.greetingMode} onChange={updateGreetingMode} />
-          <AgentActions
-            onStart={() => sendToContent(MESSAGE_TYPES.START)}
-            onStop={() => sendToContent(MESSAGE_TYPES.STOP)}
-          />
-        </section>
-
         <StatusLine status={status} />
+
+        <Tabs
+          size="small"
+          className={styles.tabs}
+          items={[
+            {
+              key: 'llm',
+              label: '大模型配置',
+              children: (
+                <section className={styles.section}>
+                  <LlmConfig
+                    config={config}
+                    models={models}
+                    isFetchingModels={isFetchingModels}
+                    isTesting={isTesting}
+                    onConfigChange={updateConfig}
+                    onServiceChange={handleServiceChange}
+                    onRefreshModels={() => refreshModels(config)}
+                    onTestConnection={() => testConnection(config)}
+                  />
+                </section>
+              ),
+            },
+            {
+              key: 'resume',
+              label: '简历配置',
+              children: (
+                <section className={styles.section}>
+                  <ResumeEditor savedText={config.resumeText} onSave={saveResume} onClear={clearResume} />
+                </section>
+              ),
+            },
+            {
+              key: 'run',
+              label: '运行配置',
+              children: (
+                <section className={styles.section}>
+                  <GreetingModeSelector value={config.greetingMode} onChange={updateGreetingMode} />
+                  {/* <AgentActions
+                    onStart={() => sendToContent(MESSAGE_TYPES.START)}
+                    onStop={() => sendToContent(MESSAGE_TYPES.STOP)}
+                  /> */}
+                </section>
+              ),
+            },
+          ]}
+        />
       </div>
     </ConfigProvider>
   );

@@ -104,7 +104,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
     emit({ type: 'setStatus', text: 'AI 分析中…' });
     const prompt = buildPrompt(config.resumeText, { ...info, description: detail.description });
     const client = createLlmClient(config);
-    const text = await client.chat([{ role: 'system', content: prompt }]);
+    const text = await client.chat([{ role: 'user', content: prompt }]);
     const result = parseLlmResponse(text);
     emit({ type: 'setResult', result, rawText: text });
     emit({ type: 'setStatus', text: '分析完成' });

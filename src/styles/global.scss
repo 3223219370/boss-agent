@@ -1,12 +1,12 @@
 // 全局样式：仅用于 popup 页面（扩展页），content 浮层样式全部走 CSS Modules + Shadow DOM
 
-// popup 页面基础重置与固定宽度（Chrome popup 宽高受限，360px 固定防止内容变化导致宽度抖动）
+// popup 页面基础重置与固定宽度（Chrome popup 宽高受限，480px 固定防止内容变化导致宽度抖动；Tab 布局下大模型表单与简历编辑区需要更宽的空间）
 html,
 body {
   margin: 0;
   padding: 0;
-  width: 360px;
-  max-width: 360px;
+  width: 480px;
+  max-width: 480px;
   min-height: 100%;
   overflow-x: hidden;
   font-family:
