@@ -19,7 +19,7 @@ import {
   extractCardInfo,
   extractDetailInfo,
   findCurrentCard,
-  nextCardAfter,
+  currentCart,
   scrollAndClick,
   scrollToBottom,
   waitForDetail,
@@ -162,12 +162,12 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
   async function runLoop(): Promise<void> {
     try {
       while (loop.status === 'RUNNING') {
-        const card = nextCardAfter(loop.currentIndex);
+        const card = currentCart(loop.currentIndex);
         if (!card) {
           // 列表到底：滚动页面本身触发懒加载，等待后重试一次
           scrollToBottom();
           await sleep(LOOP_CONFIG.lazyLoadRetryDelayMs);
-          const retry = nextCardAfter(loop.currentIndex);
+          const retry = currentCart(loop.currentIndex);
           if (!retry) {
             loop.status = 'DONE';
             emit({ type: 'setLoopStatus', status: 'DONE', text: '列表已全部分析完成' });

@@ -8,8 +8,6 @@ export const ZHIPIN_SELECTORS = {
   anyCard: '.job-card-box',
   /** 卡片内岗位名称链接 */
   jobName: '.job-name',
-  /** 卡片内薪资 */
-  jobSalary: '.job-salary',
   /** 卡片内标签列表项（年限/学历等） */
   tagList: '.tag-list li',
   /** 卡片内公司名称 */

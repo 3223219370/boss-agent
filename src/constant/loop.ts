@@ -2,7 +2,7 @@
 
 export const LOOP_CONFIG = {
   /** 相邻两次分析之间的延时（ms），避免触发 BOSS 风控 */
-  delayMs: 2500,
+  delayMs: 500,
   /** 点击卡片后等待详情加载的超时（ms） */
   waitDetailTimeoutMs: 8000,
   /** 详情加载轮询间隔（ms） */

@@ -17,29 +17,15 @@
   background: #f0fbfa;
 }
 
-// 标题行：岗位名（截断）+ 薪资（品牌色强调）
-.titleRow {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-
+// 标题：岗位名（截断）
 .title {
-  min-width: 0;
+  display: block;
   font-size: 13px;
   font-weight: 600;
   color: #1f2329;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.salary {
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: #00b8b0;
 }
 
 // 元信息行：公司（墨色加粗）· 地点（次级灰）

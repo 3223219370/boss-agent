@@ -1,4 +1,4 @@
-// 步骤 1 内容：岗位获取（岗位名 / 薪资 / 公司 / 地点 / 标签，hover 查看岗位描述）
+// 步骤 1 内容：岗位获取（岗位名 / 公司 / 地点 / 标签，hover 查看岗位描述）
 
 import { Popover } from 'antd';
 
@@ -26,12 +26,9 @@ function StepJob({ job, description, active }: StepJobProps) {
 
   return (
     <div className={`${styles.job} ${active ? styles.jobActive : ''}`}>
-      <div className={styles.titleRow}>
-        <span className={styles.title} title={job.title}>
-          {job.title}
-        </span>
-        <span className={styles.salary}>{job.salary}</span>
-      </div>
+      <span className={styles.title} title={job.title}>
+        {job.title}
+      </span>
       <div className={styles.meta}>
         <span className={styles.company}>{job.company}</span>
         <span className={styles.sep}>·</span>

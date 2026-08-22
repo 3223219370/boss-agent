@@ -17,7 +17,7 @@ export function findCurrentCard(): HTMLElement | null {
 }
 
 /**
- * 提取卡片信息（岗位名/薪资/标签/公司/地点/href）
+ * 提取卡片信息（岗位名/标签/公司/地点/href）
  * @param cardEl 卡片元素
  * @returns 卡片结构化信息
  */
@@ -25,7 +25,6 @@ export function extractCardInfo(cardEl: Element): JobCardInfo {
   const nameEl = cardEl.querySelector<HTMLElement>(ZHIPIN_SELECTORS.jobName);
   return {
     title: nameEl?.textContent?.trim() ?? '',
-    salary: cardEl.querySelector<HTMLElement>(ZHIPIN_SELECTORS.jobSalary)?.textContent?.trim() ?? '',
     tags: Array.from(cardEl.querySelectorAll(ZHIPIN_SELECTORS.tagList)).map(
       (li) => li.textContent?.trim() ?? '',
     ),
@@ -91,7 +90,7 @@ export function extractDetailInfo(): JobDetailInfo {
  * @param index 卡片索引
  * @returns 卡片元素；索引越界返回 null
  */
-export function nextCardAfter(index: number): Element | null {
+export function currentCart(index: number): Element | null {
   return Array.from(document.querySelectorAll(ZHIPIN_SELECTORS.cardArea))[index] ?? null;
 }
 
@@ -100,7 +99,7 @@ export function nextCardAfter(index: number): Element | null {
  * @param index 卡片索引
  */
 export function scrollAndClick(index: number): void {
-  const card = nextCardAfter(index);
+  const card = currentCart(index);
   if (!card) return;
   card.scrollIntoView({ block: 'center' });
   clickCard(card);

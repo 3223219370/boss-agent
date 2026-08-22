@@ -27,8 +27,6 @@ export interface AppConfig extends LlmConfig {
 export interface JobCardInfo {
   /** 岗位名称 */
   title: string;
-  /** 薪资文本，如 "20-35K" */
-  salary: string;
   /** 标签数组（年限/学历/方向等） */
   tags: string[];
   /** 公司名称 */
@@ -51,8 +49,6 @@ export interface JobDetailInfo {
 export interface JobInfo {
   /** 岗位名称 */
   title: string;
-  /** 薪资文本 */
-  salary: string;
   /** 标签数组 */
   tags: string[];
   /** 公司名称 */

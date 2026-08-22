@@ -6,7 +6,7 @@
   bottom: 20px;
   // 低于 antd 弹层 z-index（zIndexPopupBase=10000），保证 Popover 内容浮于面板之上
   z-index: 9999;
-  width: 380px;
+  width: 460px;
   max-height: 85vh;
   overflow: auto;
   background: #fff;
