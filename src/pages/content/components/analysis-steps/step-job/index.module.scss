@@ -1,0 +1,94 @@
+// 步骤 1 内容卡：信息分层（标题行 / 元信息 / 标签），hover 查看岗位描述
+
+// 内容卡基础态：白底细描边，激活态切换为品牌青左条 + 浅青底（焦点引导）
+.job {
+  padding: 10px 12px;
+  border: 1px solid #e6e9ed;
+  border-left: 2px solid transparent;
+  border-radius: 8px;
+  background: #f7f9fa;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.jobActive {
+  border-left-color: #00b8b0;
+  background: #f0fbfa;
+}
+
+// 标题行：岗位名（截断）+ 薪资（品牌色强调）
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.title {
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2329;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.salary {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #00b8b0;
+}
+
+// 元信息行：公司（墨色加粗）· 地点（次级灰）
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.company {
+  font-weight: 500;
+  color: #1f2329;
+}
+
+.tags {
+  margin-top: 3px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+// 岗位描述入口：品牌色虚线下划线，hover 弹层展示 JD 全文
+.jdLink {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #00b8b0;
+  border-bottom: 1px dashed #00b8b0;
+  cursor: pointer;
+}
+
+// Popover 内 JD 全文：等宽字体便于阅读段落，限高滚动
+.jd {
+  max-width: 300px;
+  max-height: 300px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #4b5563;
+}
+
+// 空态引导文案
+.empty {
+  padding: 8px 0;
+  font-size: 12px;
+  color: #9ca3af;
+}

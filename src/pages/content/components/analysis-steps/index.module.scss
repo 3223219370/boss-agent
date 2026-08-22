@@ -1,0 +1,17 @@
+// 步骤条容器样式：标题与内容间距、内容区宽度与图标列对齐
+
+.steps {
+  margin-top: 10px;
+
+  // 步骤内容区：让出图标列后的内容区域撑满面板宽度
+  :global(.ant-steps-item-content) {
+    width: 100%;
+  }
+
+  // 步骤间留白适中，避免纵向步骤条在 380px 面板内过挤
+  :global(.ant-steps-item) {
+    &:not(:last-child) {
+      margin-bottom: 4px;
+    }
+  }
+}

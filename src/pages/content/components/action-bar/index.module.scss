@@ -1,47 +1,16 @@
-// 操作按钮组样式
+// 操作按钮组样式（antd Button block 占满，垂直堆叠）
 
 .foot {
   display: flex;
+  flex-direction: column;
   gap: 8px;
   margin-top: 12px;
-
-  .btn {
-    flex: 1;
-  }
 }
 
-.btn {
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.btnPrimary {
-  background: #00b8b0;
-  color: #fff;
-  font-weight: 500;
-
-  &:hover {
-    background: #00a69f;
-  }
-}
-
-.btnGhost {
-  background: #fff;
-  color: #4b5563;
-  border-color: #d9dde3;
-
-  &:hover {
-    border-color: #00b8b0;
-    color: #00a69f;
-    background: #f6fffe;
-  }
-}
-
-.btnFull {
-  width: 100%;
-  margin-top: 9px;
+// 打招呼模式提示：自动/手动模式说明小字
+.modeHint {
+  margin-top: 2px;
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
 }

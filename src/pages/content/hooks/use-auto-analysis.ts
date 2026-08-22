@@ -4,14 +4,6 @@ import { useCallback, useMemo, useReducer } from 'react';
 
 import type { Analyzer } from '~src/services/analysis/analyzer';
 import { createAnalyzer } from '~src/services/analysis/analyzer';
-import {
-  clickCard,
-  extractCardInfo,
-  extractDetailInfo,
-  findCurrentCard,
-  findGreetingButtons,
-  waitForDetail,
-} from '~src/services/zhipin/scraper';
 import { getErrorMessage } from '~src/utils/error-message';
 import type { AnalysisAction, AnalysisUiState } from '../types';
 import { IDLE_STATUS_TEXT } from '../constant';
@@ -19,12 +11,14 @@ import { IDLE_STATUS_TEXT } from '../constant';
 /** UI 初始状态 */
 const INITIAL_UI: AnalysisUiState = {
   status: 'IDLE',
+  phase: 'idle',
   statusText: IDLE_STATUS_TEXT,
   isError: false,
   job: null,
   detail: null,
   result: null,
   rawText: '',
+  prompt: '',
   closed: false,
 };
 
@@ -39,8 +33,12 @@ function uiReducer(state: AnalysisUiState, action: AnalysisAction): AnalysisUiSt
       return { ...state, result: action.result, rawText: action.rawText };
     case 'setLoopStatus':
       return { ...state, status: action.status, statusText: action.text, isError: action.isError ?? false };
+    case 'setPhase':
+      return { ...state, phase: action.phase };
+    case 'setPrompt':
+      return { ...state, prompt: action.prompt };
     case 'resetResult':
-      return { ...state, result: null, rawText: '' };
+      return { ...state, result: null, rawText: '', prompt: '' };
     case 'close':
       return { ...state, closed: true };
     case 'reopen':
@@ -64,30 +62,13 @@ export function useAutoAnalysis() {
   /** 循环是否激活（运行中或匹配暂停） */
   const isLoopActive = ui.status === 'RUNNING' || ui.status === 'MATCHED';
 
-  /** 抓取当前岗位（卡片 + 详情）并更新 UI；成功后顺带输出打招呼按钮候选（Step 7 选择器调研用） */
-  const grab = useCallback(async () => {
-    dispatch({ type: 'setStatus', text: '抓取中…' });
-    try {
-      const card = findCurrentCard();
-      if (!card) throw new Error('未找到岗位卡片');
-      const info = extractCardInfo(card);
-      clickCard(card);
-      await waitForDetail(info.title);
-      const detail = extractDetailInfo();
-      dispatch({ type: 'setJob', job: info, detail });
-      dispatch({ type: 'resetResult' });
-      dispatch({ type: 'setStatus', text: '抓取完成' });
-      console.info('[BoosAgent] 打招呼按钮候选：', findGreetingButtons());
-    } catch (err) {
-      dispatch({ type: 'setStatus', text: `抓取失败：${getErrorMessage(err)}`, isError: true });
-    }
-  }, []);
-
   /** 手动分析当前岗位：完整闭环（抓取 → prompt → LLM → 解析 → 渲染），失败显示错误状态 */
   const analyze = useCallback(async () => {
     try {
       await analyzer.analyzeOnce();
     } catch (err) {
+      // 重置阶段，避免步骤条停留在抓取/分析的 loading 态
+      dispatch({ type: 'setPhase', phase: 'idle' });
       dispatch({ type: 'setStatus', text: `分析失败：${getErrorMessage(err)}`, isError: true });
     }
   }, [analyzer]);
@@ -113,5 +94,5 @@ export function useAutoAnalysis() {
   /** 重新打开面板 */
   const reopen = useCallback(() => dispatch({ type: 'reopen' }), []);
 
-  return { ui, isLoopActive, grab, analyze, start, resume, stop, close, reopen };
+  return { ui, isLoopActive, analyze, start, resume, stop, close, reopen };
 }

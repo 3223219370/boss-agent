@@ -1,0 +1,100 @@
+// 步骤 3 内容卡：结果徽章区（徽章 + 结论句）与理由区（标签 + 正文）分隔展示
+
+// 结果卡基础态
+.result {
+  padding: 10px 12px;
+  border: 1px solid #e6e9ed;
+  border-left: 2px solid #e6e9ed;
+  border-radius: 8px;
+  background: #fafbfc;
+}
+
+// 匹配：品牌青左边条 + 浅青底（与面板匹配高亮呼应）
+.resultMatch {
+  border-left-color: #00b8b0;
+  background: #f0fbfa;
+}
+
+// 不匹配：错误红左边条 + 浅红底
+.resultUnmatch {
+  border-left-color: #f04438;
+  background: #fef6f5;
+}
+
+// 解析失败：同不匹配的警示基调
+.resultFail {
+  border-left-color: #f04438;
+  background: #fef6f5;
+}
+
+// 徽章行：徽章 + 结论句（结果聚焦）
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// 结果徽章：实底白字，视觉焦点
+.badge {
+  flex-shrink: 0;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.7;
+  color: #fff;
+}
+
+.badgeMatch {
+  background: #00b8b0;
+}
+
+.badgeUnmatch {
+  background: #f04438;
+}
+
+.badgeFail {
+  background: #f04438;
+}
+
+// 结论句：行动导向的辅助文案
+.summary {
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2329;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 结果与理由的分隔细线
+.divider {
+  margin: 8px 0;
+  border-top: 1px solid rgba(230, 233, 237, 0.9);
+}
+
+// 理由区
+.reasonBlock {
+  min-width: 0;
+}
+
+.reasonLabel {
+  margin-bottom: 2px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.reason {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #4b5563;
+  overflow-wrap: break-word;
+}
+
+// 等待态文案
+.empty {
+  padding: 8px 0;
+  font-size: 12px;
+  color: #9ca3af;
+}

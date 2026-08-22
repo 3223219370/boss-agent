@@ -2,6 +2,7 @@
 // 引擎保持命令式（原版逻辑逐行对照迁移），所有 UI 变化通过 emit 事件抛出，由 React 侧 reducer 消费
 
 import type {
+  AnalysisPhase,
   GreetingMode,
   JobCardInfo,
   JobDetailInfo,
@@ -33,7 +34,9 @@ export type AnalyzerEvent =
   | { type: 'setJob'; job: JobCardInfo; detail: JobDetailInfo }
   | { type: 'setResult'; result: LlmParseResult; rawText: string }
   | { type: 'resetResult' }
-  | { type: 'setLoopStatus'; status: LoopStatus; text: string; isError?: boolean };
+  | { type: 'setLoopStatus'; status: LoopStatus; text: string; isError?: boolean }
+  | { type: 'setPhase'; phase: AnalysisPhase }
+  | { type: 'setPrompt'; prompt: string };
 
 /** 循环运行时状态（引擎内部，页面刷新即重置） */
 interface LoopState {
@@ -83,6 +86,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
    */
   async function analyzeOnce(): Promise<LlmParseResult> {
     emit({ type: 'resetResult' });
+    emit({ type: 'setPhase', phase: 'grabbing' });
     emit({ type: 'setStatus', text: '抓取中…' });
 
     const config = await getAppConfig();
@@ -101,12 +105,15 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
     const detail = extractDetailInfo();
     emit({ type: 'setJob', job: info, detail });
 
+    emit({ type: 'setPhase', phase: 'analyzing' });
     emit({ type: 'setStatus', text: 'AI 分析中…' });
     const prompt = buildPrompt(config.resumeText, { ...info, description: detail.description });
+    emit({ type: 'setPrompt', prompt });
     const client = createLlmClient(config);
     const text = await client.chat([{ role: 'user', content: prompt }]);
     const result = parseLlmResponse(text);
     emit({ type: 'setResult', result, rawText: text });
+    emit({ type: 'setPhase', phase: 'done' });
     emit({ type: 'setStatus', text: '分析完成' });
     return result;
   }
@@ -174,6 +181,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
           continue;
         }
 
+        emit({ type: 'setPhase', phase: 'grabbing' });
         emit({ type: 'setStatus', text: `分析中（${loop.currentIndex + 1}）…` });
         scrollAndClick(loop.currentIndex);
         try {
@@ -189,11 +197,14 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
         const detail = extractDetailInfo();
         emit({ type: 'setJob', job: info, detail });
 
+        emit({ type: 'setPhase', phase: 'analyzing' });
         const prompt = buildPrompt(resumeCache, { ...info, description: detail.description });
+        emit({ type: 'setPrompt', prompt });
         if (!llmClient) return;
         const text = await llmClient.chat([{ role: 'system', content: prompt }]);
         const result = parseLlmResponse(text);
         emit({ type: 'setResult', result, rawText: text });
+        emit({ type: 'setPhase', phase: 'done' });
         loop.doneSet.add(info.href);
         loop.currentIndex++;
 
@@ -239,6 +250,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
       }
     } catch (err) {
       loop.status = 'IDLE';
+      emit({ type: 'setPhase', phase: 'idle' });
       emit({
         type: 'setLoopStatus',
         status: 'IDLE',
@@ -280,6 +292,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
   /** 停止自动循环（runLoop 的 while 检查到状态变化后自然退出） */
   function stop(): void {
     loop.status = 'IDLE';
+    emit({ type: 'setPhase', phase: 'idle' });
     emit({ type: 'setLoopStatus', status: 'IDLE', text: '已停止' });
   }
 

@@ -4,7 +4,8 @@
   position: fixed;
   right: 20px;
   bottom: 20px;
-  z-index: 2147483647;
+  // 低于 antd 弹层 z-index（zIndexPopupBase=10000），保证 Popover 内容浮于面板之上
+  z-index: 9999;
   width: 380px;
   max-height: 85vh;
   overflow: auto;
@@ -34,7 +35,7 @@
   position: fixed;
   right: 20px;
   bottom: 20px;
-  z-index: 2147483647;
+  z-index: 9999;
   width: 44px;
   height: 44px;
   border-radius: 50%;

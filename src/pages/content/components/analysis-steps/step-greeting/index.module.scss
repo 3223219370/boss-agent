@@ -1,0 +1,46 @@
+// 步骤 4 内容卡：打招呼语 + 复制按钮
+
+.greeting {
+  padding: 10px 12px;
+  border: 1px solid #e6e9ed;
+  border-left: 2px solid transparent;
+  border-radius: 8px;
+  background: #f7f9fa;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+// 匹配暂停等待用户操作：激活态强调
+.greetingActive {
+  border-left-color: #00b8b0;
+  background: #f0fbfa;
+}
+
+// 打招呼语正文
+.text {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #1f2329;
+  overflow-wrap: break-word;
+}
+
+// 操作行：复制按钮 + 操作提示
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+// 不匹配置灰占位
+.emptyMuted {
+  padding: 8px 0;
+  font-size: 12px;
+  color: #c1c6cd;
+}

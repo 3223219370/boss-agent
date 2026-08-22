@@ -82,6 +82,9 @@ export interface LlmParseResult extends LlmResult {
 /** 分析循环状态机状态 */
 export type LoopStatus = 'IDLE' | 'RUNNING' | 'MATCHED' | 'DONE';
 
+/** 分析流程阶段（驱动浮层 Steps 的步骤状态与 loading 展示） */
+export type AnalysisPhase = 'idle' | 'grabbing' | 'analyzing' | 'done';
+
 /** 打招呼模式：auto 自动发送后继续下一个 / manual 暂停等用户手动复制发送 */
 export type GreetingMode = 'auto' | 'manual';
 

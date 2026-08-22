@@ -1,0 +1,62 @@
+// 步骤 2 内容卡：输入/输出两行条目，hover 查看全文
+
+.ai {
+  padding: 10px 12px;
+  border: 1px solid #e6e9ed;
+  border-left: 2px solid transparent;
+  border-radius: 8px;
+  background: #f7f9fa;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.aiActive {
+  border-left-color: #00b8b0;
+  background: #f0fbfa;
+}
+
+// 分析中提示行
+.loading {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #00b8b0;
+}
+
+// 条目行：标签 + 查看链接
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+
+  & + .row {
+    margin-top: 6px;
+  }
+}
+
+.label {
+  color: #6b7280;
+}
+
+// 查看入口：品牌色
+.link {
+  flex-shrink: 0;
+  color: #00b8b0;
+  cursor: pointer;
+}
+
+// Popover 内全文：等宽字体，限高滚动
+.code {
+  max-width: 320px;
+  max-height: 300px;
+  overflow: auto;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #4b5563;
+}
