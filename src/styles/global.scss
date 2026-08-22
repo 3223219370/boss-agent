@@ -1,0 +1,28 @@
+// 全局样式：仅用于 popup 页面（扩展页），content 浮层样式全部走 CSS Modules + Shadow DOM
+
+// popup 页面基础重置与固定宽度（Chrome popup 宽高受限，360px 固定防止内容变化导致宽度抖动）
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 360px;
+  max-width: 360px;
+  min-height: 100%;
+  overflow-x: hidden;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+// 扩展页 body 允许内部垂直滚动（水平禁止）
+body {
+  overflow-y: auto;
+}
+
+// 统一盒模型
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

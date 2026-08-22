@@ -1,0 +1,41 @@
+// 面板头部样式
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.logoDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00b8b0;
+}
+
+.closeBtn {
+  border: 0;
+  background: none;
+  color: #9aa1ab;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 7px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: #f2f4f6;
+    color: #1a1d21;
+  }
+}

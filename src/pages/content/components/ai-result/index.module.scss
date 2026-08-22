@@ -1,0 +1,112 @@
+// AI 分析结果区样式
+
+.result {
+  border-top: 1px solid #eef0f3;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.verdict {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: 999px;
+}
+
+.verdictMatch {
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  // 匹配徽章弹出动画（仅用 transform，符合动画规范）
+  animation: verdictPop 0.4s ease-out;
+}
+
+@keyframes verdictPop {
+  0% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.verdictUnmatch {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.reason {
+  margin: 8px 0;
+  font-size: 12.5px;
+  color: #4b5563;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.greetingLabel {
+  font-size: 12px;
+  color: #9aa1ab;
+  margin-bottom: 5px;
+}
+
+.greeting {
+  background: #f8f9fb;
+  border-left: 3px solid #00b8b0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #1a1d21;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.btn {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btnPrimary {
+  background: #00b8b0;
+  color: #fff;
+  font-weight: 500;
+
+  &:hover {
+    background: #00a69f;
+  }
+}
+
+.btnFull {
+  width: 100%;
+  margin-top: 9px;
+}
+
+.raw {
+  margin-top: 10px;
+
+  summary {
+    font-size: 12px;
+    color: #9aa1ab;
+    cursor: pointer;
+  }
+}
+
+.rawBody {
+  font-size: 12px;
+  color: #6b7280;
+  background: #f8f9fb;
+  border-radius: 8px;
+  padding: 8px 10px;
+  max-height: 140px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-top: 6px;
+}

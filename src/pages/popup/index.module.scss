@@ -1,0 +1,43 @@
+// popup 页面布局样式
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #f6f7f9;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #00b8b0;
+}
+
+.brandName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1d21;
+}
+
+.section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.sectionTitle {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+}

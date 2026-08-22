@@ -9,11 +9,12 @@
     "./**/*.tsx"
   ],
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
     "paths": {
       "~*": [
         "./*"
       ]
-    },
-    "baseUrl": "."
+    }
   }
 }

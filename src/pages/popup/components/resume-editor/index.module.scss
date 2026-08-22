@@ -1,0 +1,17 @@
+// 简历编辑区样式
+
+.textarea {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.savedHint {
+  font-size: 12px;
+  color: #9aa1ab;
+}

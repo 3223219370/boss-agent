@@ -1,0 +1,30 @@
+// 状态条样式
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+  min-height: 18px;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00b8b0;
+  flex-shrink: 0;
+}
+
+.dotError {
+  background: #dc2626;
+}
+
+.status {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.textError {
+  color: #dc2626;
+}

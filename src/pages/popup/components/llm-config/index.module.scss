@@ -1,0 +1,32 @@
+// 大模型配置区样式
+
+.config {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.modelRow {
+  display: flex;
+  gap: 8px;
+}
+
+.modelSelect {
+  flex: 1;
+  min-width: 0;
+}

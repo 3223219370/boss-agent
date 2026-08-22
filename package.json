@@ -2,14 +2,16 @@
   "name": "boos-agent",
   "displayName": "Boos agent",
   "version": "0.0.1",
-  "description": ".",
-  "author": "Plasmo Corp. <foss@plasmo.com>",
+  "description": "BOSS 直聘岗位 AI 匹配分析助手：自动循环分析岗位列表，本地大模型判断匹配度，匹配则生成打招呼语",
+  "author": "HXH",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "package": "plasmo package"
+    "package": "plasmo package",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "antd": "^6.6.1",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
@@ -21,11 +23,15 @@
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
     "prettier": "3.2.4",
+    "sass": "^1.103.1",
     "typescript": "5.3.3"
   },
   "manifest": {
+    "permissions": [
+      "storage"
+    ],
     "host_permissions": [
-      "https://*/*"
+      "http://localhost:11434/*"
     ]
   }
 }
