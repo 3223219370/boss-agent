@@ -3,16 +3,16 @@
 /** 消息类型 */
 export const MESSAGE_TYPES = {
   /** 开始自动分析 */
-  START: 'boos-agent-start',
+  START: 'boss-agent-start',
   /** 停止自动分析 */
-  STOP: 'boos-agent-stop',
+  STOP: 'boss-agent-stop',
 } as const;
 
 /** 消息类型联合 */
-export type BoosAgentMessageType = (typeof MESSAGE_TYPES)[keyof typeof MESSAGE_TYPES];
+export type BossAgentMessageType = (typeof MESSAGE_TYPES)[keyof typeof MESSAGE_TYPES];
 
 /** popup 发给 content script 的消息 */
-export interface BoosAgentMessage {
+export interface BossAgentMessage {
   /** 消息类型 */
-  type: BoosAgentMessageType;
+  type: BossAgentMessageType;
 }

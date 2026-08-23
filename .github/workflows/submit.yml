@@ -31,4 +31,4 @@ jobs:
         uses: PlasmoHQ/bpp@v3
         with:
           keys: ${{ secrets.SUBMIT_KEYS }}
-          artifact: build/boos-agent.zip
+          artifact: build/boss-agent.zip

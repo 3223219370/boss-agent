@@ -4,7 +4,7 @@
 
 ## 项目简介
 
-Boos Agent —— BOSS 直聘岗位 AI 匹配分析助手（Chrome MV3 扩展）。
+Boss Agent —— BOSS 直聘岗位 AI 匹配分析助手（Chrome MV3 扩展）。
 
 用户在 BOSS 直聘岗位列表页批量浏览岗位时，扩展自动循环分析每个岗位：用大模型（Ollama / DeepSeek / 千问等 OpenAI 兼容 API）判断岗位与简历的匹配度——不匹配自动滚动到下一个；匹配则触发提醒（面板高亮 + 提示音），并按「打招呼模式」处理：**自动模式（默认）**自动点击「立即沟通」发送打招呼后继续下一个岗位；**手动模式**暂停展示 AI 生成的打招呼语供一键复制，等用户确认后继续。
 
@@ -17,7 +17,7 @@ popup 可查看**分析记录历史**：岗位名称 / 岗位详情 / 匹配结�
 | 命令 | 说明 |
 |------|------|
 | `pnpm dev` | 开发构建（watch，输出 `build/chrome-mv3-dev`，加载到 chrome://extensions） |
-| `pnpm build` | 生产构建（输出 `build/boos-agent`，构建后由 `scripts/rename-output.mjs` 重命名） |
+| `pnpm build` | 生产构建（输出 `build/boss-agent`，构建后由 `scripts/rename-output.mjs` 重命名） |
 | `pnpm package` | 打包发布产物 |
 | `pnpm typecheck` | TypeScript 类型检查（Parcel 不 typecheck，改完代码必须跑） |
 
@@ -27,8 +27,8 @@ popup 可查看**分析记录历史**：岗位名称 / 岗位详情 / 匹配结�
 
 ```
 src/popup.tsx (入口薄壳) ──> src/pages/popup/        antd 配置面板：服务/模型/APIKey/简历/打招呼模式/启停
-src/contents/boos-agent.tsx (CSUI 入口，仅注入岗位列表页：推荐 /web/geek/jobs + 搜索 /web/geek/job) ──> src/pages/content/  页面右下角 Shadow DOM 浮层
-        │ chrome.runtime.onMessage（boos-agent-start / boos-agent-stop）
+src/contents/boss-agent.tsx (CSUI 入口，仅注入岗位列表页：推荐 /web/geek/jobs + 搜索 /web/geek/job) ──> src/pages/content/  页面右下角 Shadow DOM 浮层
+        │ chrome.runtime.onMessage（boss-agent-start / boss-agent-stop）
         ▼
 src/services/
 ├── llm/           多 provider 统一客户端（ollama / openai 兼容），工厂 createLlmClient

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import type { AppConfig, GreetingMode, LlmConfig } from '~src/constant/types';
-import type { BoosAgentMessageType } from '~src/constant/messages';
+import type { BossAgentMessageType } from '~src/constant/messages';
 import { MESSAGE_TYPES } from '~src/constant/messages';
 import { createLlmClient } from '~src/services/llm';
 import { API_KEY_PROVIDERS } from '~src/constant/llm-providers';
@@ -123,7 +123,7 @@ export function usePopupConfig() {
   }, []);
 
   /** 向当前 BOSS 直聘页面的 content script 发送消息 */
-  const sendToContent = useCallback(async (type: BoosAgentMessageType) => {
+  const sendToContent = useCallback(async (type: BossAgentMessageType) => {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab.id || !tab.url?.includes('zhipin.com')) {
       setStatus({ text: '请先打开 BOSS 直聘页面', isError: true });

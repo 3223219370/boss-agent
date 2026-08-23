@@ -14,7 +14,7 @@ function PanelHeader({ onClose }: PanelHeaderProps) {
     <div className={styles.header}>
       <div className={styles.brand}>
         <span className={styles.logoDot} />
-        <span className={styles.brandName}>Boos Agent</span>
+        <span className={styles.brandName}>Boss Agent</span>
       </div>
       <button className={styles.closeBtn} title="关闭" onClick={onClose}>
         ×

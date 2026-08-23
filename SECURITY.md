@@ -4,7 +4,7 @@
 
 请**不要**通过公开 issue 报告安全漏洞，以免影响其他用户。
 
-请将漏洞详情通过邮件发送至仓库所有者的公开邮箱（见 GitHub 仓库主页），或通过 GitHub 的 [Private vulnerability reporting](https://github.com/3223219370/boos-agent/security/advisories/new) 功能私下提交。
+请将漏洞详情通过邮件发送至仓库所有者的公开邮箱（见 GitHub 仓库主页），或通过 GitHub 的 [Private vulnerability reporting](https://github.com/3223219370/boss-agent/security/advisories/new) 功能私下提交。
 
 报告中请尽量包含：
 

@@ -53,7 +53,7 @@ function PopupPage() {
       <div className={styles.page}>
         <header className={styles.brand}>
           <span className={styles.logoDot} />
-          <span className={styles.brandName}>Boos Agent</span>
+          <span className={styles.brandName}>Boss Agent</span>
         </header>
 
         <StatusLine status={status} />

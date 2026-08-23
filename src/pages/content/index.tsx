@@ -7,7 +7,7 @@ import { StyleProvider } from '@ant-design/cssinjs';
 import type { ThemeConfig } from 'antd';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import type { BoosAgentMessage, BoosAgentMessageType } from '~src/constant/messages';
+import type { BossAgentMessage, BossAgentMessageType } from '~src/constant/messages';
 import { MESSAGE_TYPES } from '~src/constant/messages';
 import { useAutoAnalysis } from './hooks/use-auto-analysis';
 import { useGreetingMode } from './hooks/use-greeting-mode';
@@ -90,11 +90,11 @@ function ContentApp() {
 
   // 监听 popup 的开始/停止指令，转发到引擎动作
   useEffect(() => {
-    const handlers: Record<BoosAgentMessageType, () => void> = {
+    const handlers: Record<BossAgentMessageType, () => void> = {
       [MESSAGE_TYPES.START]: start,
       [MESSAGE_TYPES.STOP]: stop,
     };
-    const listener = (message: BoosAgentMessage) => handlers[message.type]?.();
+    const listener = (message: BossAgentMessage) => handlers[message.type]?.();
     chrome.runtime.onMessage.addListener(listener);
     return () => chrome.runtime.onMessage.removeListener(listener);
   }, [start, stop]);
@@ -105,7 +105,7 @@ function ContentApp() {
   // 面板已关闭：显示悬浮圆钮
   if (ui.closed) {
     return (
-      <button className={styles.minimBtn} title="打开 Boos Agent" onClick={reopen}>
+      <button className={styles.minimBtn} title="打开 Boss Agent" onClick={reopen}>
         {MINIM_BUTTON_TEXT}
       </button>
     );

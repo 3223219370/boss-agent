@@ -25,10 +25,10 @@ export const config: PlasmoCSConfig = {
  * - 面板自身的 fixed 定位见 src/pages/content/index.module.scss
  */
 export const getRootContainer: PlasmoGetRootContainer = () => {
-  document.getElementById('boos-agent-root')?.remove();
+  document.getElementById('boss-agent-root')?.remove();
 
   const host = document.createElement('div');
-  host.id = 'boos-agent-root';
+  host.id = 'boss-agent-root';
   host.style.cssText = 'position: fixed; right: 20px; bottom: 20px; z-index: 2147483647;';
   const shadow = host.attachShadow({ mode: 'open' });
 
@@ -37,7 +37,7 @@ export const getRootContainer: PlasmoGetRootContainer = () => {
   shadow.appendChild(style);
 
   const container = document.createElement('div');
-  container.id = 'boos-agent-container';
+  container.id = 'boss-agent-container';
   shadow.appendChild(container);
   document.documentElement.appendChild(host);
   return container;

@@ -240,7 +240,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
       await saveAnalysisRecord(record)
       pendingRecordId = record.id
     } catch (err) {
-      console.error("[boos-agent] 保存分析记录失败", err)
+      console.error("[boss-agent] 保存分析记录失败", err)
     }
   }
 
@@ -252,7 +252,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
     try {
       await updateGreetOutcome(pendingRecordId, outcome)
     } catch (err) {
-      console.error("[boos-agent] 补写打招呼结果失败", err)
+      console.error("[boss-agent] 补写打招呼结果失败", err)
     }
   }
 

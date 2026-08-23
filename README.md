@@ -1,4 +1,4 @@
-# Boos Agent
+# Boss Agent
 
 > BOSS 直聘根据简历自动投递自动打招呼
 
@@ -24,7 +24,7 @@ Chrome Manifest V3 · [Plasmo](https://www.plasmo.com/) 0.90 · React 18 · Type
 ## 快速开始
 
 ### 1. 安装扩展
-[下载 boos-agent.zip 压缩包](https://github.com/3223219370/boos-agent/raw/main/boos-agent.zip)，然后新建一个 boos-agent目录，然后把压缩包解压到这个目录，然后在浏览器 `chrome://extensions/` 开启「开发者模式」，点击「加载未打包的扩展程序」，选择 解压后的 boos-agent 目录即可。
+[下载 boss-agent.zip 压缩包](https://github.com/3223219370/boss-agent/raw/main/boss-agent.zip)，然后新建一个 boss-agent目录，然后把压缩包解压到这个目录，然后在浏览器 `chrome://extensions/` 开启「开发者模式」，点击「加载未打包的扩展程序」，选择 解压后的 boss-agent 目录即可。
 
 ### 2. 配置大模型
 
@@ -91,7 +91,7 @@ pnpm dev         # 开发构建（watch，输出 build/chrome-mv3-dev）
 | 命令 | 说明 |
 |------|------|
 | `pnpm dev` | 开发构建（watch，输出 `build/chrome-mv3-dev`） |
-| `pnpm build` | 生产构建（输出 `build/boos-agent`） |
+| `pnpm build` | 生产构建（输出 `build/boss-agent`） |
 | `pnpm package` | 打包发布产物（zip） |
 | `pnpm typecheck` | TypeScript 类型检查（Parcel 不 typecheck，改代码后必跑） |
 
@@ -102,7 +102,7 @@ pnpm dev         # 开发构建（watch，输出 build/chrome-mv3-dev）
 ```
 ├── src/
 │   ├── popup.tsx                 popup 入口（配置面板薄壳）
-│   ├── contents/boos-agent.tsx   content script 入口（仅注入岗位列表页：推荐 /web/geek/jobs、搜索 /web/geek/job）
+│   ├── contents/boss-agent.tsx   content script 入口（仅注入岗位列表页：推荐 /web/geek/jobs、搜索 /web/geek/job）
 │   ├── pages/
 │   │   ├── popup/                配置面板（antd）：服务 / 模型 / API Key / 简历 / 打招呼模式 / 历史记录
 │   │   └── content/              页面右下角浮层（Shadow DOM + CSS Modules）：分析进度、匹配结果、打招呼
