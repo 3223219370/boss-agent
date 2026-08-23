@@ -24,7 +24,7 @@ Chrome Manifest V3 · [Plasmo](https://www.plasmo.com/) 0.90 · React 18 · Type
 ## 快速开始
 
 ### 1. 安装扩展
-[下载压缩包](./boos-agent.zip)，然后在浏览器 `chrome://extensions/` 开启「开发者模式」，点击「加载未打包的扩展程序」，选择 解压后的 目录即可。
+[下载 boos-agent.zip 压缩包](https://github.com/3223219370/boos-agent/raw/main/boos-agent.zip)，然后在浏览器 `chrome://extensions/` 开启「开发者模式」，点击「加载未打包的扩展程序」，选择 解压后的 目录即可。
 
 ### 2. 配置大模型
 
