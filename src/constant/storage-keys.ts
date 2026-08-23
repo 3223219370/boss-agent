@@ -13,7 +13,17 @@ export const STORAGE_KEYS = {
   resumeText: 'resumeText',
   /** 打招呼模式（auto 自动 / manual 手动） */
   greetingMode: 'greetingMode',
+  /** 分析历史记录数组（JSON 序列化，最新在前，上限 500 条） */
+  analysisHistory: 'analysisHistory',
 } as const;
 
-/** 全部存储键（一次性读取全部配置用） */
-export const ALL_STORAGE_KEYS = Object.values(STORAGE_KEYS);
+// 配置存储键（不含 history）：getAppConfig 全量读取用，避免把整个历史数组读进配置
+// 注意：新增配置键必须同步加进来；history 键不走此数组（见 src/services/history）
+export const ALL_STORAGE_KEYS: string[] = [
+  STORAGE_KEYS.provider,
+  STORAGE_KEYS.baseUrl,
+  STORAGE_KEYS.apiKey,
+  STORAGE_KEYS.model,
+  STORAGE_KEYS.resumeText,
+  STORAGE_KEYS.greetingMode,
+];

@@ -4,6 +4,7 @@
 import { LOOP_CONFIG } from "~src/constant/loop"
 import type {
   AnalysisPhase,
+  AnalysisRecord,
   GreetingMode,
   JobCardInfo,
   JobDetailInfo,
@@ -12,6 +13,7 @@ import type {
   LoopStatus
 } from "~src/constant/types"
 import { ZHIPIN_SELECTORS } from "~src/constant/zhipin-selectors"
+import { generateRecordId, saveAnalysisRecord, updateGreetOutcome } from "~src/services/history"
 import { createLlmClient } from "~src/services/llm"
 import type { LlmClient } from "~src/services/llm/types"
 import { getAppConfig } from "~src/services/storage"
@@ -101,6 +103,8 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
   let greetingMode: GreetingMode = "auto"
   /** 当前分析模式（analyzeOnce 置手动、start 置自动；「分析下一个」时保持模式不变） */
   let analysisMode: AnalysisMode = "manual"
+  /** 当前未定稿历史记录 ID（persistRecord 写入成功后置位，供打招呼结果补写定位） */
+  let pendingRecordId: string | null = null
 
   /** 延时（防风控间隔） */
   function sleep(ms: number): Promise<void> {
@@ -211,7 +215,45 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
       completionTokens: llmResult.completionTokens
     })
     emit({ type: "setPhase", phase: "done" })
+    // 分析闭环终点：立即入库（仅解析成功的记录），用户在打招呼决策前关闭面板记录也不丢失
+    await persistRecord(info, detail, result)
     return result
+  }
+
+  /** 写入一条初始分析记录（仅 result.ok 入库；失败静默，不阻塞分析主流程） */
+  async function persistRecord(
+    info: JobCardInfo,
+    detail: JobDetailInfo,
+    result: LlmParseResult
+  ): Promise<void> {
+    if (!result.ok) return
+    pendingRecordId = null
+    try {
+      const record: AnalysisRecord = {
+        id: generateRecordId(),
+        analyzedAt: Date.now(),
+        job: info,
+        detail,
+        result,
+        greetOutcome: "none"
+      }
+      await saveAnalysisRecord(record)
+      pendingRecordId = record.id
+    } catch (err) {
+      console.error("[boos-agent] 保存分析记录失败", err)
+    }
+  }
+
+  /** 补写当前记录的打招呼结果（幂等守卫在 service 层，失败静默） */
+  async function finalizeGreet(
+    outcome: "sent" | "failed" | "manual"
+  ): Promise<void> {
+    if (!pendingRecordId) return
+    try {
+      await updateGreetOutcome(pendingRecordId, outcome)
+    } catch (err) {
+      console.error("[boos-agent] 补写打招呼结果失败", err)
+    }
   }
 
   /** 抓取并分析指定卡片（手动分析 / 分析下一个 / 自动循环 共用的单次分析闭环） */
@@ -311,9 +353,11 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
     emit({ type: "setStatus", text: "匹配！自动打招呼中…" })
     const greeted = await sendGreeting()
     if (!greeted) {
+      await finalizeGreet("failed")
       pauseAsMatched("自动打招呼失败，请手动发送后点继续", true)
       return false
     }
+    await finalizeGreet("sent")
     return true
   }
 
@@ -395,6 +439,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
             continue
           }
           // 手动模式：暂停等待用户复制打招呼语后点「继续分析」
+          await finalizeGreet("manual")
           pauseAsMatched("匹配到合适岗位，等待你的操作")
           return
         }
@@ -438,6 +483,8 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
    */
   async function continueNext(needGreet: boolean): Promise<void> {
     if (loop.status === "MATCHED") {
+      // 手动模式匹配暂停后继续：扩展未代发，补写 manual（幂等守卫保证 failed 不会被覆盖）
+      await finalizeGreet("manual")
       resume()
       return
     }
@@ -452,6 +499,7 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
       return
     }
     // 手动分析模式：单次分析下一个岗位后停下，模式不变
+    await finalizeGreet("manual")
     await analyzeCardAt(findActiveCardIndex() + 1)
   }
 

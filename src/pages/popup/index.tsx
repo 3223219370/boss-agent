@@ -11,8 +11,9 @@ import type { LlmServiceId } from '~src/constant/llm-providers';
 import { usePopupConfig } from './hooks/use-popup-config';
 import LlmConfig from './components/llm-config';
 import ResumeEditor from './components/resume-editor';
-import GreetingModeSelector from './components/greeting-mode';
 import AgentActions from './components/agent-actions';
+import GreetingModeSelector from './components/greeting-mode';
+import HistoryTab from './components/history-tab';
 import StatusLine from './components/status-line';
 import styles from './index.module.scss';
 
@@ -98,6 +99,15 @@ function PopupPage() {
                     onStart={() => sendToContent(MESSAGE_TYPES.START)}
                     onStop={() => sendToContent(MESSAGE_TYPES.STOP)}
                   /> */}
+                </section>
+              ),
+            },
+            {
+              key: 'history',
+              label: '分析记录',
+              children: (
+                <section className={styles.section}>
+                  <HistoryTab />
                 </section>
               ),
             },

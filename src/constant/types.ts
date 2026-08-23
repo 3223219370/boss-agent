@@ -75,6 +75,25 @@ export interface LlmParseResult extends LlmResult {
   ok: boolean;
 }
 
+/** 打招呼结果：sent 自动发送成功 / failed 自动发送失败降级 / manual 匹配但扩展未代发（手动模式）/ none 不匹配或未走到打招呼 */
+export type GreetOutcome = 'sent' | 'failed' | 'manual' | 'none';
+
+/** 单条岗位分析历史记录（岗位详情完整保存，容量靠条数上限控制） */
+export interface AnalysisRecord {
+  /** 记录唯一 ID（crypto.randomUUID 生成） */
+  id: string;
+  /** 分析完成时间戳（Date.now 毫秒数，排序与展示均用它） */
+  analyzedAt: number;
+  /** 岗位卡片信息（标题/标签/公司/地点/href） */
+  job: JobCardInfo;
+  /** 岗位详情信息（描述完整保存，不截断） */
+  detail: JobDetailInfo;
+  /** LLM 分析结果（仅 ok=true 的记录入库） */
+  result: LlmParseResult;
+  /** 打招呼结果 */
+  greetOutcome: GreetOutcome;
+}
+
 /** 分析循环状态机状态 */
 export type LoopStatus = 'IDLE' | 'RUNNING' | 'MATCHED' | 'DONE';
 

@@ -1,0 +1,65 @@
+// 单条分析记录展示样式
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding-right: 8px;
+
+  // 重置 antd Tag 默认右边距，改由 flex gap 控制间距
+  :global(.ant-tag) {
+    margin-inline-end: 0;
+  }
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.subRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.subText {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.time {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 2px 0 6px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: 12px;
+  color: #999;
+}
