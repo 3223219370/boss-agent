@@ -11,6 +11,7 @@ import type { BossAgentMessage, BossAgentMessageType } from '~src/constant/messa
 import { MESSAGE_TYPES } from '~src/constant/messages';
 import { useAutoAnalysis } from './hooks/use-auto-analysis';
 import { useGreetingMode } from './hooks/use-greeting-mode';
+import useIsListPage from './hooks/use-is-list-page';
 import { playMatchChime } from '~src/utils/play-chime';
 import PanelHeader from './components/panel-header';
 import StatusBar from './components/status-bar';
@@ -44,6 +45,8 @@ const THEME: ThemeConfig = {
  * - 关闭后收起为悬浮圆钮，点击重新打开
  */
 function ContentApp() {
+  /** 当前 URL 是否为岗位列表页（SPA 站内导航进入列表页也实时生效） */
+  const isListPage = useIsListPage();
   const {
     ui,
     isLoopActive,
@@ -101,6 +104,11 @@ function ContentApp() {
 
   /** 当前结果是否匹配（控制面板高亮呼吸动画） */
   const isMatched = ui.result?.match ?? false;
+
+  // 非岗位列表页（首页/详情页等）：不渲染浮层（hook 已监听 SPA 路由变化）
+  if (!isListPage) {
+    return null;
+  }
 
   // 面板已关闭：显示悬浮圆钮
   if (ui.closed) {

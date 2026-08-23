@@ -7,15 +7,14 @@ import ContentApp from '~src/pages/content';
 import { PANEL_STYLES } from '~src/pages/content/panel-styles';
 
 /**
- * 注入范围：仅 BOSS 直聘岗位列表类页面（其他路由无岗位列表结构，浮层无意义）
- * - query 参数不参与 match pattern 的 path 匹配，带 ?ka= / ?query= 等参数的 URL 同样注入
- * - 精确路径匹配避免误伤详情页 /web/geek/job/xxx.html 等非列表页
+ * 注入范围：整个 zhipin.com 域
+ * - BOSS 直聘是 SPA：从首页/详情页站内导航（history.pushState）进入列表页不触发页面加载，
+ *   若 matches 只写列表页路径，content script 永远不会注入该页面（Chrome 只在整页加载时按 URL 匹配注入一次）
+ * - 是否显示浮层由运行时 URL 判断控制：useIsListPage（src/pages/content/hooks/use-is-list-page.ts）
+ * - 列表页路径集合见 src/pages/content/constant.ts 的 JOB_LIST_PATHS
  */
 export const config: PlasmoCSConfig = {
-  matches: [
-    'https://www.zhipin.com/web/geek/jobs', // 职位推荐列表页
-    'https://www.zhipin.com/web/geek/job', // 搜索结果列表页
-  ],
+  matches: ['https://www.zhipin.com/*'],
 };
 
 /**
