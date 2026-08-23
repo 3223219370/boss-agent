@@ -19,10 +19,14 @@ interface AnalysisStepsProps {
   onCopy: (greeting: string) => void;
   /** 是否已复制（按钮反馈） */
   copied: boolean;
+  /** 打招呼并继续分析回调 */
+  onGreetContinue: () => void;
+  /** 分析下一个岗位回调 */
+  onAnalyzeNext: () => void;
 }
 
 /** 分析流程步骤条 */
-function AnalysisSteps({ ui, onCopy, copied }: AnalysisStepsProps) {
+function AnalysisSteps({ ui, onCopy, copied, onGreetContinue, onAnalyzeNext }: AnalysisStepsProps) {
   const { phase, job, detail, result } = ui;
 
   const hasJob = !!job;
@@ -30,6 +34,10 @@ function AnalysisSteps({ ui, onCopy, copied }: AnalysisStepsProps) {
   const matched = result?.match ?? false;
   /** 手动模式匹配暂停：等待用户复制发送（打招呼步骤高亮为当前步骤） */
   const waitingUser = ui.status === 'MATCHED';
+  /** 匹配且暂停/空闲：显示「打招呼并继续分析」主按钮（引擎 RUNNING 自动分析中不显示） */
+  const showGreetContinue = matched && (waitingUser || ui.status === 'IDLE');
+  /** 手动分析不匹配且引擎未在自动循环中：显示「分析下一个」按钮（RUNNING 中引擎自动切换） */
+  const showAnalyzeNext = !!result && result.ok && !matched && ui.status === 'IDLE';
 
   /** 抓取中：步骤 1 进行中；分析中：步骤 2 进行中（icon 换 Spin） */
   const step1Active = phase === 'grabbing';
@@ -61,7 +69,13 @@ function AnalysisSteps({ ui, onCopy, copied }: AnalysisStepsProps) {
     {
       title: '结果',
       status: hasResult ? 'finish' : 'wait',
-      content: <StepResult result={result} />,
+      content: (
+        <StepResult
+          result={result}
+          showAnalyzeNext={showAnalyzeNext}
+          onAnalyzeNext={onAnalyzeNext}
+        />
+      ),
     },
     {
       title: '打招呼语',
@@ -72,7 +86,9 @@ function AnalysisSteps({ ui, onCopy, copied }: AnalysisStepsProps) {
           greeting={result?.greeting ?? ''}
           waitingUser={waitingUser}
           active={hasResult && matched && waitingUser}
+          showGreetContinue={showGreetContinue}
           onCopy={onCopy}
+          onGreetContinue={onGreetContinue}
           copied={copied}
         />
       ),

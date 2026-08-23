@@ -1,4 +1,4 @@
-// 步骤 4 内容卡：打招呼语 + 复制按钮
+// 步骤 4 内容卡：打招呼语 + 主按钮「打招呼并继续分析」+ 次要复制按钮
 
 .greeting {
   padding: 10px 12px;
@@ -25,12 +25,19 @@
   overflow-wrap: break-word;
 }
 
-// 操作行：复制按钮 + 操作提示
+// 操作区：主按钮「打招呼并继续分析」整行 block，复制按钮 + 提示为次要行
 .actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+// 次要操作行：复制按钮 + 操作提示
+.copyRow {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
 }
 
 .hint {

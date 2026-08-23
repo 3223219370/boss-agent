@@ -44,7 +44,17 @@ const THEME: ThemeConfig = {
  * - 关闭后收起为悬浮圆钮，点击重新打开
  */
 function ContentApp() {
-  const { ui, isLoopActive, analyze, start, resume, stop, close, reopen } = useAutoAnalysis();
+  const {
+    ui,
+    isLoopActive,
+    analyze,
+    start,
+    greetAndContinue,
+    analyzeNext,
+    stop,
+    close,
+    reopen,
+  } = useAutoAnalysis();
   /** 浮层根节点引用（getRootNode 取 ShadowRoot） */
   const panelRef = useRef<HTMLDivElement>(null);
   /** antd 样式注入容器（ShadowRoot，就绪后渲染 antd 内容） */
@@ -114,14 +124,18 @@ function ContentApp() {
           >
             <PanelHeader onClose={close} />
             <StatusBar text={ui.statusText} isError={ui.isError} status={ui.status} />
-            <AnalysisSteps ui={ui} onCopy={handleCopy} copied={copied} />
+            <AnalysisSteps
+              ui={ui}
+              onCopy={handleCopy}
+              copied={copied}
+              onGreetContinue={greetAndContinue}
+              onAnalyzeNext={analyzeNext}
+            />
             <ActionBar
               isLoopActive={isLoopActive}
-              isMatched={ui.status === 'MATCHED'}
               greetingMode={greetingMode}
               onAnalyze={analyze}
               onStart={start}
-              onResume={resume}
               onStop={stop}
             />
           </ConfigProvider>

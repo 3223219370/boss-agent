@@ -42,7 +42,7 @@ function PopupPage() {
   const handleServiceChange = (serviceId: LlmServiceId) => {
     const preset = LLM_SERVICE_PRESETS.find((p) => p.id === serviceId);
     if (!preset) return;
-    const next: Partial<LlmConfigType> = { provider: preset.provider, baseUrl: preset.baseUrl };
+    const next: Partial<LlmConfigType> = { provider: preset.provider, baseUrl: preset.baseUrl, apiKey: '', model: '' };
     updateConfig(next);
     void refreshModels({ ...config, ...next });
   };

@@ -1,4 +1,6 @@
-// 步骤 3 内容：匹配结果（结果徽章 + 结论句 / 理由分区展示）
+// 步骤 3 内容：匹配结果（结果徽章 + 结论句 / 理由分区 + 不匹配时「分析下一个」按钮）
+
+import { Button } from 'antd';
 
 import type { LlmParseResult } from '~src/constant/types';
 import { EMPTY_PLACEHOLDER } from '../../../constant';
@@ -8,10 +10,14 @@ import styles from './index.module.scss';
 interface StepResultProps {
   /** AI 分析结果（null 显示等待态） */
   result: LlmParseResult | null;
+  /** 是否显示「分析下一个」按钮（手动分析不匹配且引擎未在自动循环中） */
+  showAnalyzeNext: boolean;
+  /** 分析下一个岗位回调 */
+  onAnalyzeNext: () => void;
 }
 
 /** 步骤 3：结果内容 */
-function StepResult({ result }: StepResultProps) {
+function StepResult({ result, showAnalyzeNext, onAnalyzeNext }: StepResultProps) {
   if (!result) {
     return <div className={styles.empty}>等待 AI 分析结果</div>;
   }
@@ -49,6 +55,13 @@ function StepResult({ result }: StepResultProps) {
         <div className={styles.reasonLabel}>理由</div>
         <div className={styles.reason}>{reason || EMPTY_PLACEHOLDER}</div>
       </div>
+      {showAnalyzeNext && (
+        <div className={styles.nextRow}>
+          <Button block onClick={onAnalyzeNext}>
+            分析下一个
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

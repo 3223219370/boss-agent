@@ -84,9 +84,14 @@ export function useAutoAnalysis() {
     void analyzer.start();
   }, [analyzer]);
 
-  /** 匹配暂停后继续分析 */
-  const resume = useCallback(() => {
-    analyzer.resume();
+  /** 匹配后打招呼并继续分析下一个岗位（引擎内处理自动/手动模式分支） */
+  const greetAndContinue = useCallback(() => {
+    void analyzer.greetAndContinue();
+  }, [analyzer]);
+
+  /** 手动分析不匹配后分析下一个岗位（引擎内从当前岗位下一个启动循环） */
+  const analyzeNext = useCallback(() => {
+    void analyzer.analyzeNext();
   }, [analyzer]);
 
   /** 停止分析 */
@@ -100,5 +105,5 @@ export function useAutoAnalysis() {
   /** 重新打开面板 */
   const reopen = useCallback(() => dispatch({ type: 'reopen' }), []);
 
-  return { ui, isLoopActive, analyze, start, resume, stop, close, reopen };
+  return { ui, isLoopActive, analyze, start, greetAndContinue, analyzeNext, stop, close, reopen };
 }

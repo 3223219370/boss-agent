@@ -74,6 +74,11 @@
   border-top: 1px solid rgba(230, 233, 237, 0.9);
 }
 
+// 不匹配时的「分析下一个」按钮行
+.nextRow {
+  margin-top: 8px;
+}
+
 // 理由区
 .reasonBlock {
   min-width: 0;
