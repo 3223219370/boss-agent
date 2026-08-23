@@ -4,7 +4,7 @@
 
 在 BOSS 直聘 岗位列表页批量浏览时，自动循环分析每个岗位：用大模型判断岗位与简历的匹配度——**不匹配自动滚动到下一个，匹配则触发提醒并生成打招呼语**，支持自动 / 手动两种打招呼模式，帮你大幅提升刷岗效率。
 
-![agent](./assets/agent.png)
+![agent](assets/agent.png)
 
 ## 功能特性
 
@@ -40,7 +40,7 @@ Chrome Manifest V3 · [Plasmo](https://www.plasmo.com/) 0.90 · React 18 · Type
 > 对于不想使用本地部署的用户可以使用千问提供的免费模型，每个模型免费1M的token，用完再切其它模型
 千问工作台地址：https://platform.qianwenai.com/home/benefits
 记得筛选可用模型，把免费额度用尽即停全部打开
-![千问](./assets/image.png)
+![千问](assets/image.png)
 ### 3. 测试连接
 
 点「测试连接」确认模型服务可达，再进入下一步。
