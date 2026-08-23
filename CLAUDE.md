@@ -17,7 +17,7 @@ popup 可查看**分析记录历史**：岗位名称 / 岗位详情 / 匹配结�
 | 命令 | 说明 |
 |------|------|
 | `pnpm dev` | 开发构建（watch，输出 `build/chrome-mv3-dev`，加载到 chrome://extensions） |
-| `pnpm build` | 生产构建（输出 `build/chrome-mv3-prod`） |
+| `pnpm build` | 生产构建（输出 `build/boos-agent`，构建后由 `scripts/rename-output.mjs` 重命名） |
 | `pnpm package` | 打包发布产物 |
 | `pnpm typecheck` | TypeScript 类型检查（Parcel 不 typecheck，改完代码必须跑） |
 
@@ -27,7 +27,7 @@ popup 可查看**分析记录历史**：岗位名称 / 岗位详情 / 匹配结�
 
 ```
 src/popup.tsx (入口薄壳) ──> src/pages/popup/        antd 配置面板：服务/模型/APIKey/简历/打招呼模式/启停
-src/contents/boos-agent.tsx (CSUI 入口) ──> src/pages/content/  页面右下角 Shadow DOM 浮层
+src/contents/boos-agent.tsx (CSUI 入口，仅注入岗位列表页：推荐 /web/geek/jobs + 搜索 /web/geek/job) ──> src/pages/content/  页面右下角 Shadow DOM 浮层
         │ chrome.runtime.onMessage（boos-agent-start / boos-agent-stop）
         ▼
 src/services/

@@ -1,8 +1,8 @@
 # Boos Agent
 
-> BOSS 直聘岗位 AI 匹配分析助手 · Chrome MV3 扩展
+> BOSS 直聘根据简历自动投递自动打招呼
 
-在 BOSS 直聘（zhipin.com）岗位列表页批量浏览时，自动循环分析每个岗位：用大模型判断岗位与简历的匹配度——**不匹配自动滚动到下一个，匹配则触发提醒并生成打招呼语**，支持自动 / 手动两种打招呼模式，帮你大幅提升刷岗效率。
+在 BOSS 直聘 岗位列表页批量浏览时，自动循环分析每个岗位：用大模型判断岗位与简历的匹配度——**不匹配自动滚动到下一个，匹配则触发提醒并生成打招呼语**，支持自动 / 手动两种打招呼模式，帮你大幅提升刷岗效率。
 
 ## 功能特性
 
@@ -24,8 +24,7 @@ Chrome Manifest V3 · [Plasmo](https://www.plasmo.com/) 0.90 · React 18 · Type
 ## 快速开始
 
 ### 1. 安装扩展
-
-按 [本地开发](#本地开发) 构建扩展，然后在浏览器 `chrome://extensions/` 开启「开发者模式」，点击「加载已解压的扩展程序」，选择 `build/chrome-mv3-dev` 目录。
+[下载压缩包](./boos-agent.zip)，然后在浏览器 `chrome://extensions/` 开启「开发者模式」，点击「加载未打包的扩展程序」，选择 解压后的 目录即可。
 
 ### 2. 配置大模型
 
@@ -35,6 +34,11 @@ Chrome Manifest V3 · [Plasmo](https://www.plasmo.com/) 0.90 · React 18 · Type
   - ⚠️ Chrome 扩展访问 Ollama 需要额外配置，见 [Ollama CORS 配置（必读）](#ollama-cors-配置必读)
 - **OpenAI 兼容 API**（千问 / DeepSeek 等）：选择「OpenAI 兼容」，可从预设中一键填充服务地址，填写 API Key 后点「获取模型」
 
+#### 千问免费模型
+> 对于不想使用本地部署的用户可以使用千问提供的免费模型，每个模型免费1M的token，用完再切其它模型
+千问工作台地址：https://platform.qianwenai.com/home/benefits
+记得筛选可用模型，把免费额度用尽即停全部打开
+![千问](./assets/image.png)
 ### 3. 测试连接
 
 点「测试连接」确认模型服务可达，再进入下一步。
@@ -53,6 +57,11 @@ Chrome Manifest V3 · [Plasmo](https://www.plasmo.com/) 0.90 · React 18 · Type
 ### 6. 开始分析
 
 打开 BOSS 直聘岗位列表页（需已登录），点「开始分析」，页面右下角浮层会实时展示分析进度；任意时刻可点「停止」。
+
+支持的页面（浮层仅在以下列表页注入，其他页面不出现）：
+
+- 职位推荐列表页：https://www.zhipin.com/web/geek/jobs
+- 搜索结果列表页：https://www.zhipin.com/web/geek/job?query=关键词（带任意搜索参数均可）
 
 ## Ollama CORS 配置（必读）
 
@@ -82,7 +91,7 @@ pnpm dev         # 开发构建（watch，输出 build/chrome-mv3-dev）
 | 命令 | 说明 |
 |------|------|
 | `pnpm dev` | 开发构建（watch，输出 `build/chrome-mv3-dev`） |
-| `pnpm build` | 生产构建（输出 `build/chrome-mv3-prod`） |
+| `pnpm build` | 生产构建（输出 `build/boos-agent`） |
 | `pnpm package` | 打包发布产物（zip） |
 | `pnpm typecheck` | TypeScript 类型检查（Parcel 不 typecheck，改代码后必跑） |
 
@@ -93,7 +102,7 @@ pnpm dev         # 开发构建（watch，输出 build/chrome-mv3-dev）
 ```
 ├── src/
 │   ├── popup.tsx                 popup 入口（配置面板薄壳）
-│   ├── contents/boos-agent.tsx   content script 入口（注入 zhipin.com 页面）
+│   ├── contents/boos-agent.tsx   content script 入口（仅注入岗位列表页：推荐 /web/geek/jobs、搜索 /web/geek/job）
 │   ├── pages/
 │   │   ├── popup/                配置面板（antd）：服务 / 模型 / API Key / 简历 / 打招呼模式 / 历史记录
 │   │   └── content/              页面右下角浮层（Shadow DOM + CSS Modules）：分析进度、匹配结果、打招呼

@@ -6,9 +6,16 @@ import type { PlasmoCSConfig, PlasmoGetRootContainer } from 'plasmo';
 import ContentApp from '~src/pages/content';
 import { PANEL_STYLES } from '~src/pages/content/panel-styles';
 
-/** 注入范围：仅 BOSS 直聘页面 */
+/**
+ * 注入范围：仅 BOSS 直聘岗位列表类页面（其他路由无岗位列表结构，浮层无意义）
+ * - query 参数不参与 match pattern 的 path 匹配，带 ?ka= / ?query= 等参数的 URL 同样注入
+ * - 精确路径匹配避免误伤详情页 /web/geek/job/xxx.html 等非列表页
+ */
 export const config: PlasmoCSConfig = {
-  matches: ['https://www.zhipin.com/*'],
+  matches: [
+    'https://www.zhipin.com/web/geek/jobs', // 职位推荐列表页
+    'https://www.zhipin.com/web/geek/job', // 搜索结果列表页
+  ],
 };
 
 /**
