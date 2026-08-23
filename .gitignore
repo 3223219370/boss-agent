@@ -20,7 +20,11 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
+.env
 .env*.local
+
+# local tooling config (claude code)
+.claude/settings.local.json
 
 out/
 build/

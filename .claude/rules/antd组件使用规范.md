@@ -9,6 +9,9 @@
 | Alert | `message` 已废弃改用 `title`；v6.4 新增 `variant`（`outlined` / `filled`）；`variant="filled"` 视觉 = **浅色底无边框 + icon 主色**（不是实色深底） |
 | Popover / Tooltip | `classNames` / `styles` 语义化定制（5.23+）；子节点需支持 `onMouseEnter/onMouseLeave/onFocus/onClick` 事件 |
 | ConfigProvider | `getPopupContainer` 支持返回 `ShadowRoot`（content 浮层挂弹层用）；`wave={{ disabled: true }}` 可禁用按钮波纹（波纹样式注入 document.head，shadow root 内禁用） |
+| List | **v6 已废弃**（官方标记将移除，替代品 Listy 6.6.0+）；简单「列表 + 展开详情」直接用 `Collapse items`（label=摘要行、children=详情，配 `size="small"` + `bordered={false}`） |
+| Typography | 多行省略用 `ellipsis={{ rows, expandable: 'collapsible', symbol: (expanded) => (expanded ? '收起' : '展开') }}`（'collapsible' 与 symbol 函数 5.16+）；flex 容器内需给文本容器 `flex: 1` + `min-width: 0` 约束宽度才生效 |
+| Popconfirm | `okButtonProps={{ danger: true }}` 红色确认按钮；`okText / cancelText / description` 直接可用 |
 
 ## 弹层 z-index
 
