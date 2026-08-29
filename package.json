@@ -1,7 +1,7 @@
 {
   "name": "boss-agent",
   "displayName": "Boss Agent",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "BOSS 直聘岗位 AI 匹配分析助手：自动循环分析岗位列表，本地大模型判断匹配度，匹配则生成打招呼语",
   "author": "HXH",
   "license": "MIT",

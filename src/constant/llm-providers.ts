@@ -1,6 +1,6 @@
 // LLM 提供商相关常量：服务预设（Ollama / DeepSeek / 千问）、默认值
 
-import type { ProviderType } from './types';
+import type { LlmConfig, ProviderType } from './types';
 
 /** 服务预设（服务类型下拉选项：ollama / deepseek / qwen） */
 export const LLM_SERVICE_PRESETS = [
@@ -43,6 +43,12 @@ export const LLM_SERVICE_PRESETS = [
 
 /** 服务标识（ollama / deepseek / qwen） */
 export type LlmServiceId = (typeof LLM_SERVICE_PRESETS)[number]['id'];
+
+/**
+ * 各服务已保存的配置预设（键为服务标识；值为该服务最后一次使用时的完整 LLM 配置）。
+ * 切换服务类型时自动回填；缺省表示该服务尚未配置过
+ */
+export type LlmPresets = Partial<Record<LlmServiceId, LlmConfig>>;
 
 /** 默认 LLM 提供商 */
 export const DEFAULT_PROVIDER = 'ollama' as const;

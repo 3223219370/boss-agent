@@ -2,6 +2,7 @@
 
 import type { AppConfig, GreetingMode, LlmConfig } from '~src/constant/types';
 import { ALL_STORAGE_KEYS, STORAGE_KEYS } from '~src/constant/storage-keys';
+import type { LlmPresets } from '~src/constant/llm-providers';
 import { DEFAULT_OLLAMA_BASE, DEFAULT_PROVIDER } from '~src/constant/llm-providers';
 
 /** 未保存时的默认配置（popup 初始表单值也用此默认值） */
@@ -30,6 +31,23 @@ export async function getAppConfig(): Promise<AppConfig> {
  */
 export async function saveLlmConfig(partial: Partial<LlmConfig>): Promise<void> {
   await chrome.storage.local.set(partial);
+}
+
+/**
+ * 读取各服务已保存的配置预设（键为服务标识；未配置过的服务不在表中）
+ * @returns 预设表（空对象兜底）
+ */
+export async function getLlmPresets(): Promise<LlmPresets> {
+  const stored = await chrome.storage.local.get(STORAGE_KEYS.llmPresets);
+  return (stored[STORAGE_KEYS.llmPresets] ?? {}) as LlmPresets;
+}
+
+/**
+ * 保存完整预设表（调用方保证合并后整表写入）
+ * @param presets 预设表（键为服务标识，值为该服务完整 LLM 配置）
+ */
+export async function saveLlmPresets(presets: LlmPresets): Promise<void> {
+  await chrome.storage.local.set({ [STORAGE_KEYS.llmPresets]: presets });
 }
 
 /**

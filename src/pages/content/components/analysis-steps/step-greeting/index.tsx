@@ -51,7 +51,7 @@ function StepGreeting({
           </Button>
         )}
         <div className={styles.copyRow}>
-          <Button size="small" disabled={!greeting} onClick={() => onCopy(greeting)}>
+          <Button disabled={!greeting} onClick={() => onCopy(greeting)}>
             {copied ? '已复制 ✓' : '复制打招呼语'}
           </Button>
           {waitingUser && <span className={styles.hint}>发送后点上方按钮继续</span>}

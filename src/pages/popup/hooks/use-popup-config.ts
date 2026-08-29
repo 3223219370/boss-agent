@@ -1,19 +1,22 @@
 // popup 配置面板核心 hook：配置读写（改动即保存）、模型拉取、连接测试、消息发送
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { AppConfig, GreetingMode, LlmConfig } from '~src/constant/types';
 import type { BossAgentMessageType } from '~src/constant/messages';
 import { MESSAGE_TYPES } from '~src/constant/messages';
 import { createLlmClient } from '~src/services/llm';
-import { API_KEY_PROVIDERS } from '~src/constant/llm-providers';
+import { API_KEY_PROVIDERS, LLM_SERVICE_PRESETS, matchServicePreset } from '~src/constant/llm-providers';
+import type { LlmPresets, LlmServiceId } from '~src/constant/llm-providers';
 import {
   clearResumeSummaryText,
   clearResumeText,
   DEFAULT_APP_CONFIG,
   getAppConfig,
+  getLlmPresets,
   saveGreetingMode,
   saveLlmConfig,
+  saveLlmPresets,
   saveResumeSummaryText,
   saveResumeText,
 } from '~src/services/storage';
@@ -40,9 +43,33 @@ export function usePopupConfig() {
   /** 状态条 */
   const [status, setStatus] = useState<PopupStatus>(IDLE_STATUS);
 
-  /** 更新配置并立即持久化（改动即保存） */
+  /** 当前配置同步镜像：updateConfig 合并预设时计算目标服务用（setConfig 异步时序下保证一致性） */
+  const configRef = useRef<AppConfig>(DEFAULT_APP_CONFIG);
+  /** 各服务已保存的配置预设镜像：updateConfig 合并、切换服务回填用（预设不渲染 UI，无需 state） */
+  const presetsRef = useRef<LlmPresets>({});
+
+  /** 更新配置并立即持久化（改动即保存；同步快照写回当前服务的预设，切换回该服务时自动回填） */
   const updateConfig = useCallback((partial: Partial<LlmConfig>) => {
-    setConfig((prev) => ({ ...prev, ...partial }));
+    const next = { ...configRef.current, ...partial };
+    // 当前服务预设快照写回（完整配置，保证预设不缺键）
+    const serviceId = matchServicePreset(next.provider);
+    if (serviceId) {
+      const nextPresets: LlmPresets = {
+        ...presetsRef.current,
+        [serviceId]: {
+          provider: next.provider,
+          baseUrl: next.baseUrl,
+          apiKey: next.apiKey,
+          model: next.model,
+        },
+      };
+      presetsRef.current = nextPresets;
+      void saveLlmPresets(nextPresets).catch((err: unknown) => {
+        setStatus({ text: `保存失败：${getErrorMessage(err)}`, isError: true });
+      });
+    }
+    configRef.current = next;
+    setConfig(next);
     void saveLlmConfig(partial).catch((err: unknown) => {
       setStatus({ text: `保存失败：${getErrorMessage(err)}`, isError: true });
     });
@@ -96,6 +123,31 @@ export function usePopupConfig() {
       setIsTesting(false);
     }
   }, []);
+
+  /**
+   * 切换服务类型：有已存预设则自动回填并拉取模型列表 + 测试连接；
+   * 无预设则写入预设默认地址、清空 API Key 与模型，仅拉取模型列表（无内容可测）
+   */
+  const switchService = useCallback(
+    (serviceId: LlmServiceId) => {
+      const preset = LLM_SERVICE_PRESETS.find((p) => p.id === serviceId);
+      if (!preset) return;
+      const saved = presetsRef.current[serviceId];
+      const next: LlmConfig = saved ?? {
+        provider: preset.provider,
+        baseUrl: preset.baseUrl,
+        apiKey: '',
+        model: '',
+      };
+      updateConfig(next);
+      void refreshModels(next);
+      // 自动回填场景自动测试连接（首次使用无预设时不测，避免空配置误报）
+      if (saved) {
+        void testConnection(next);
+      }
+    },
+    [refreshModels, testConnection, updateConfig],
+  );
 
   /** 保存简历文本 */
   const saveResume = useCallback(async (text: string) => {
@@ -155,11 +207,15 @@ export function usePopupConfig() {
     }
   }, []);
 
-  // 打开 popup：读取已保存配置 + 自动刷新模型列表
+  // 打开 popup：读取已保存配置 + 自动刷新模型列表；同步加载各服务预设镜像
   useEffect(() => {
     getAppConfig().then((saved) => {
+      configRef.current = saved;
       setConfig(saved);
       void refreshModels(saved);
+    });
+    getLlmPresets().then((presets) => {
+      presetsRef.current = presets;
     });
   }, [refreshModels]);
 
@@ -170,6 +226,7 @@ export function usePopupConfig() {
     isFetchingModels,
     isTesting,
     updateConfig,
+    switchService,
     refreshModels,
     testConnection,
     saveResume,
