@@ -2,8 +2,7 @@
 
 import type { LlmClient } from './types';
 import type { LlmConfig } from '~src/constant/types';
-import { createOllamaClient } from './ollama';
-import { createOpenAiClient } from './openai';
+import { createOllamaClient, createOpenAiClient } from './client';
 
 /**
  * 按配置创建 LLM 客户端

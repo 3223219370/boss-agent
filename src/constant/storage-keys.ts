@@ -11,6 +11,8 @@ export const STORAGE_KEYS = {
   model: 'model',
   /** 简历文本 */
   resumeText: 'resumeText',
+  /** 简化后简历（AI 提取招聘相关信息，为空时分析回退完整简历） */
+  resumeSummary: 'resumeSummary',
   /** 打招呼模式（auto 自动 / manual 手动） */
   greetingMode: 'greetingMode',
   /** 分析历史记录数组（JSON 序列化，最新在前，上限 500 条） */
@@ -25,5 +27,6 @@ export const ALL_STORAGE_KEYS: string[] = [
   STORAGE_KEYS.apiKey,
   STORAGE_KEYS.model,
   STORAGE_KEYS.resumeText,
+  STORAGE_KEYS.resumeSummary,
   STORAGE_KEYS.greetingMode,
 ];

@@ -19,6 +19,8 @@ export interface LlmConfig {
 export interface AppConfig extends LlmConfig {
   /** 简历文本（纯文本，来自 popup 粘贴框） */
   resumeText: string;
+  /** 简化后简历（AI 提取招聘相关信息，仅技术栈/项目经验等；分析时优先使用，为空回退完整简历） */
+  resumeSummary: string;
   /** 打招呼模式：auto 匹配后自动发送并继续下一个 / manual 匹配后暂停等用户确认 */
   greetingMode: GreetingMode;
 }

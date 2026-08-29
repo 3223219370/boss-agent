@@ -31,23 +31,24 @@ src/contents/boss-agent.tsx (CSUI 入口，仅注入岗位列表页：推荐 /we
         │ chrome.runtime.onMessage（boss-agent-start / boss-agent-stop）
         ▼
 src/services/
-├── llm/           多 provider 统一客户端（ollama / openai 兼容），工厂 createLlmClient
+├── llm/           统一客户端：client.ts 通用骨架 + LlmProviderSpec 参数化（ollama / openai 兼容），工厂 createLlmClient
 ├── zhipin/        BOSS 直聘 DOM 抓取（scraper + 反爬 sanitize）
 ├── analysis/      分析引擎 createAnalyzer（命令式状态机 + 事件驱动）
+├── resume-summary/ 简历简化（LLM 提取招聘相关信息，输出紧凑纯文本，供分析 prompt 省 token）
 ├── storage/       chrome.storage.local 类型安全封装（AppConfig）
 └── history/       分析记录历史（单键存数组 + 500 条上限淘汰 + 打招呼结果补写）
 ```
 
 - **状态机**：IDLE → RUNNING →（不匹配继续循环）→ DONE；匹配时按 greetingMode 分支：auto 自动打招呼后继续 / manual 暂停（MATCHED）等用户点「继续分析」；任意时刻可 STOP；页面刷新即重置
 - **打招呼闭环**：点击「立即沟通」（`.job-detail-op .op-btn-chat`）→ 确认弹窗为**点击后动态渲染**，必须轮询等待出现（200ms 间隔 / 5s 超时）→ 点「留在此页」（`.greet-boss-dialog .cancel-btn`）关闭；自动发送失败降级为手动暂停防漏发
-- **数据流**：popup 配置改动即保存到 storage → content 引擎 start 时快照配置（循环期间不重读）→ 抓取（卡片 → 详情）→ buildPrompt（含 few-shot 示例）→ LLM chat（format json）→ parseLlmResponse → emit 事件 → reducer 更新 UI；analyzer 额外 emit `setPhase`（idle/grabbing/analyzing/done）与 `setPrompt`，驱动浮层 Steps 步骤状态与 loading（见坑位 12）
+- **数据流**：popup 配置改动即保存到 storage → content 引擎 start 时快照配置（循环期间不重读；简历快照优先简化版 `resumeSummary || resumeText` 省 token，见坑位 14）→ 抓取（卡片 → 详情）→ buildPrompt（含 few-shot 示例）→ LLM chat（format json）→ parseLlmResponse → emit 事件 → reducer 更新 UI；analyzer 额外 emit `setPhase`（idle/grabbing/analyzing/done）与 `setPrompt`，驱动浮层 Steps 步骤状态与 loading（见坑位 12）
 - **历史数据流**：分析闭环终点 analyzer 立即写历史记录（仅解析成功）→ 打招呼决策点补写打招呼结果 → popup 历史 Tab 读 storage + `onChanged` 实时刷新（见坑位 13）
 
 ## 目录说明
 
 - `src/popup.tsx`、`src/contents/`：Plasmo 入口（**0.90.5 从 src/ 目录扫描入口，项目根目录不识别**）
 - `src/pages/popup/`、`src/pages/content/`：两个页面；组件按 kebab-case 文件夹组织（index.tsx + index.module.scss）
-- `src/services/`：按业务域拆分（llm / zhipin / analysis / storage / history）
+- `src/services/`：按业务域拆分（llm / zhipin / analysis / resume-summary / storage / history）
 - `src/utils/`：纯函数（prompt / parse-llm / normalize-base-url / error-message / play-chime）
 - `src/constant/`：全局类型（types.ts）、LLM 服务预设（llm-providers）、**zhipin 反爬选择器**（zhipin-selectors）、循环配置（loop）、历史上限（history）、storage 键、消息协议（messages）
 - `src/styles/global.scss`：仅 popup 全局样式（固定 360px 宽，防宽度抖动）
@@ -67,6 +68,8 @@ src/services/
 11. **content 浮层 z-index 分层**：shadow host 保持 `2147483647`（盖住页面）；面板 `.panel`/`.minimBtn` 为 `9999`；antd 弹层基准 `zIndexPopupBase: 10000`（实际 = 基准 + 70，如 Popover 为 10070）。弹层必须高于面板，否则 Popover 内容被面板遮挡（曾踩坑：面板 2147483647 盖住弹层 1070）
 12. **浮层 Steps 状态派生**：UI 状态含 `phase`（idle/grabbing/analyzing/done）与 `prompt` 字段；步骤状态 = phase 驱动 loading + job/result 存在性驱动 finish/wait；手动分析失败需在 catch 中重置 phase 为 idle，否则步骤条卡在 loading；打招呼模式提示经 `useGreetingMode` hook 读取配置 + `chrome.storage.onChanged` 实时同步
 13. **分析记录历史**（`src/services/history/`）：chrome.storage.local **单键存数组**（键 `analysisHistory`，最新在前）；该键**不进 `ALL_STORAGE_KEYS`**（getAppConfig 全量读取会污染配置——该数组已显式化，**新增配置键必须同步加入**）。写入模式 = `analyzeWithLlm` 立即写初始记录（仅 `result.ok` 入库，失败静默不阻塞分析）+ 打招呼决策点 `finalizeGreet` 补写 `GreetOutcome`（sent 自动发送成功 / failed 自动发送失败降级 / manual 手动模式未代发 / none 不匹配）；补写幂等守卫：仅 match 且当前为 none 时生效（防 failed 被 manual 覆盖）；上限 `HISTORY_LIMIT=500`（`src/constant/history.ts`）超限自动淘汰最旧；popup 侧 `useAnalysisHistory` hook 读取 + `onChanged` 实时刷新
+14. **LLM chat 输出格式**：`chat(messages, options?)` 的 `options.format` 默认 `'json'`（openai 强制 `response_format: json_object` / ollama 强制 `format: json`），岗位分析依赖其结构化输出；**纯文本场景（简历简化等）必须传 `{ format: 'text' }`**，否则模型被强制输出 JSON（曾踩坑：简化简历返回 JSON 而非纯文本）。简历简化流程（`src/services/resume-summary/`）：上传解析成功保存后自动触发（ResumeEditor 内 `autoTriggerSignal` 信号驱动，粘贴编辑不触发；「重新生成」按钮可手动再生成）→ 结果存 `resumeSummary` 键（**与 resumeText 并列，已入 ALL_STORAGE_KEYS**，见坑位 13）→ 简化区可编辑，AI 生成后自动落盘、手动微调后点「保存」；清空原简历联动清空简化简历；buildPrompt 已声明「简历可能为精简摘要，信息不足时按已有信息判断，不要臆造技能」
+15. **LLM provider 差异参数化**（`src/services/llm/client.ts`）：Ollama 与 OpenAI 兼容 API 共用 `createChatClient(baseUrl, model, spec)` 请求骨架（listModels / chat / testConnection / HTTP 错误处理）；两者差异（认证 headers、modelsPath、chatPath、buildChatBody、parseChatResponse）由 `LlmProviderSpec` 描述，createOllamaClient / createOpenAiClient 各组装 spec 后调用通用实现（原 ollama.ts / openai.ts 已删除）。**新增 provider 只需在 client.ts 组装 spec + create 函数，不动骨架**；Ollama 独有 NUM_CTX / NUM_PREDICT 常量与 done_reason 截断检测保留在其 spec 内
 
 ## 规范引用
 

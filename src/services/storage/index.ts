@@ -11,6 +11,7 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   apiKey: '',
   model: '',
   resumeText: '',
+  resumeSummary: '',
   greetingMode: 'auto',
 };
 
@@ -42,6 +43,19 @@ export async function saveResumeText(text: string): Promise<void> {
 /** 清空已保存的简历文本 */
 export async function clearResumeText(): Promise<void> {
   await chrome.storage.local.remove(STORAGE_KEYS.resumeText);
+}
+
+/**
+ * 保存简化后简历（AI 提取的招聘相关信息）
+ * @param text 简化简历纯文本
+ */
+export async function saveResumeSummaryText(text: string): Promise<void> {
+  await chrome.storage.local.set({ [STORAGE_KEYS.resumeSummary]: text });
+}
+
+/** 清空已保存的简化后简历 */
+export async function clearResumeSummaryText(): Promise<void> {
+  await chrome.storage.local.remove(STORAGE_KEYS.resumeSummary);
 }
 
 /**

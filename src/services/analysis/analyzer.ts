@@ -13,7 +13,11 @@ import type {
   LoopStatus
 } from "~src/constant/types"
 import { ZHIPIN_SELECTORS } from "~src/constant/zhipin-selectors"
-import { generateRecordId, saveAnalysisRecord, updateGreetOutcome } from "~src/services/history"
+import {
+  generateRecordId,
+  saveAnalysisRecord,
+  updateGreetOutcome
+} from "~src/services/history"
 import { createLlmClient } from "~src/services/llm"
 import type { LlmClient } from "~src/services/llm/types"
 import { getAppConfig } from "~src/services/storage"
@@ -29,7 +33,7 @@ import {
 } from "~src/services/zhipin/scraper"
 import { getErrorMessage } from "~src/utils/error-message"
 import { parseLlmResponse } from "~src/utils/parse-llm"
-import { buildPrompt } from "~src/utils/prompt"
+import { buildPrompt, SYSTEM_PROMPT } from "~src/utils/prompt"
 
 /** 分析事件：引擎 → UI 的所有状态变更（与 UI reducer 的 action 形状一致，可直接 dispatch） */
 export type AnalyzerEvent =
@@ -162,7 +166,8 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
       return false
     }
     llmClient = createLlmClient(config)
-    resumeCache = config.resumeText
+    // 简化简历优先（省 token），未做简化时回退完整简历
+    resumeCache = config.resumeSummary || config.resumeText
     greetingMode = config.greetingMode
     return true
   }
@@ -205,7 +210,10 @@ export function createAnalyzer(emit: (event: AnalyzerEvent) => void): Analyzer {
     })
     emit({ type: "setPrompt", prompt })
     if (!llmClient) throw new Error("LLM 客户端未初始化")
-    const llmResult = await llmClient.chat([{ role, content: prompt }])
+    const llmResult = await llmClient.chat([
+      { role: "system", content: SYSTEM_PROMPT },
+      { role, content: prompt }
+    ])
     const result = parseLlmResponse(llmResult.text)
     emit({
       type: "setResult",

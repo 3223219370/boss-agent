@@ -3,7 +3,10 @@
 import { useEffect, useState } from 'react';
 import { Button, Input } from 'antd';
 
+import type { LlmConfig } from '~src/constant/types';
+
 import FileDropzone from './file-dropzone';
+import ResumeSummaryEditor from './resume-summary-editor';
 import styles from './index.module.scss';
 
 /** ResumeEditor 组件 Props */
@@ -14,6 +17,12 @@ interface ResumeEditorProps {
   onSave: (text: string) => void;
   /** 清空回调 */
   onClear: () => void;
+  /** LLM 配置（生成简化简历用） */
+  llmConfig: LlmConfig;
+  /** 已保存的简化简历文本 */
+  summaryText: string;
+  /** 简化简历保存回调 */
+  onSummarySave: (text: string) => void;
 }
 
 /** 已保存对勾图标 */
@@ -56,9 +65,18 @@ function WarnIcon() {
  * - 亦可手动粘贴编辑后点「保存」写入 storage（避免误操作清空已存简历）
  * - 草稿与已保存内容不一致时显示「未保存修改」提醒
  */
-function ResumeEditor({ savedText, onSave, onClear }: ResumeEditorProps) {
+function ResumeEditor({
+  savedText,
+  onSave,
+  onClear,
+  llmConfig,
+  summaryText,
+  onSummarySave,
+}: ResumeEditorProps) {
   /** 编辑中的草稿文本（未保存状态） */
   const [draft, setDraft] = useState(savedText);
+  /** 上传完成信号：文件解析成功保存后 +1，传给简化简历区自动生成一次 */
+  const [autoTriggerSignal, setAutoTriggerSignal] = useState(0);
 
   // 外部变化（如清空成功）同步到草稿
   useEffect(() => {
@@ -72,9 +90,11 @@ function ResumeEditor({ savedText, onSave, onClear }: ResumeEditorProps) {
   /**
    * 文件解析成功：等自动保存落盘后由 savedText 同步回填草稿（避免 dirty 中间态闪屏）
    * 解析结果为空时 onSave 内部兜底提示「内容为空」，草稿保持不变
+   * 保存成功后触发一次自动简化（子组件监听信号变化）
    */
   const handleParsed = async (text: string) => {
     await onSave(text);
+    setAutoTriggerSignal((s) => s + 1);
   };
 
   return (
@@ -109,6 +129,13 @@ function ResumeEditor({ savedText, onSave, onClear }: ResumeEditorProps) {
           )
         )}
       </div>
+      <ResumeSummaryEditor
+        llmConfig={llmConfig}
+        resumeText={savedText}
+        summaryText={summaryText}
+        onSave={onSummarySave}
+        autoTriggerSignal={autoTriggerSignal}
+      />
     </div>
   );
 }

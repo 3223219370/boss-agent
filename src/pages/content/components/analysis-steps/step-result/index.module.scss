@@ -95,6 +95,8 @@
   line-height: 1.7;
   color: #4b5563;
   overflow-wrap: break-word;
+  // 支持\n换行
+  white-space: pre-wrap;
 }
 
 // 等待态文案

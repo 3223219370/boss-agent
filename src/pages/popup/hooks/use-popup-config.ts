@@ -8,11 +8,13 @@ import { MESSAGE_TYPES } from '~src/constant/messages';
 import { createLlmClient } from '~src/services/llm';
 import { API_KEY_PROVIDERS } from '~src/constant/llm-providers';
 import {
+  clearResumeSummaryText,
   clearResumeText,
   DEFAULT_APP_CONFIG,
   getAppConfig,
   saveGreetingMode,
   saveLlmConfig,
+  saveResumeSummaryText,
   saveResumeText,
 } from '~src/services/storage';
 import { getErrorMessage } from '~src/utils/error-message';
@@ -115,10 +117,23 @@ export function usePopupConfig() {
     });
   }, []);
 
-  /** 清空已保存的简历 */
+  /** 保存简化简历文本（AI 提取的招聘相关信息） */
+  const saveResumeSummary = useCallback(async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed) {
+      setStatus({ text: '简化简历内容为空，未保存', isError: true });
+      return;
+    }
+    await saveResumeSummaryText(trimmed);
+    setConfig((prev) => ({ ...prev, resumeSummary: trimmed }));
+    setStatus({ text: `简化简历已保存（${trimmed.length} 字符）`, isError: false });
+  }, []);
+
+  /** 清空已保存的简历（简化简历联动一并清空） */
   const clearResume = useCallback(async () => {
     await clearResumeText();
-    setConfig((prev) => ({ ...prev, resumeText: '' }));
+    await clearResumeSummaryText();
+    setConfig((prev) => ({ ...prev, resumeText: '', resumeSummary: '' }));
     setStatus({ text: '简历已清空', isError: false });
   }, []);
 
@@ -158,6 +173,7 @@ export function usePopupConfig() {
     refreshModels,
     testConnection,
     saveResume,
+    saveResumeSummary,
     clearResume,
     updateGreetingMode,
     sendToContent,

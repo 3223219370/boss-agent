@@ -34,6 +34,7 @@ function PopupPage() {
     refreshModels,
     testConnection,
     saveResume,
+    saveResumeSummary,
     clearResume,
     updateGreetingMode,
     sendToContent,
@@ -85,7 +86,14 @@ function PopupPage() {
               label: '简历配置',
               children: (
                 <section className={styles.section}>
-                  <ResumeEditor savedText={config.resumeText} onSave={saveResume} onClear={clearResume} />
+                  <ResumeEditor
+                    savedText={config.resumeText}
+                    onSave={saveResume}
+                    onClear={clearResume}
+                    llmConfig={config}
+                    summaryText={config.resumeSummary}
+                    onSummarySave={saveResumeSummary}
+                  />
                 </section>
               ),
             },
